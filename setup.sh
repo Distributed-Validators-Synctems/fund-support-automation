@@ -247,7 +247,7 @@ install_required_software
 
 while :
 do
-	collect_settings
+    collect_settings
     get_chain_id
     show_collected_settings
 
