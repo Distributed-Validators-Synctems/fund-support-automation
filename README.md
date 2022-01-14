@@ -24,6 +24,12 @@ I found it difficult to use this tool in conjunction with node inside docker con
 
 ## Usage
 
-In order to run scripts included into this tool you will need to setup appropriate crontab rule. It is recommended to collect commission cashback collector script every 5 minutes (otherwise it is possible to catch errors in case if you are pruning old blocks. Please use `pruning = "default"` configuration option in the `app.toml` file.) 
+In order to install all required tools simply issue following command:
 
-Please use included script (`setup.sh`) to prepare tool configuration.
+`curl -s https://raw.githubusercontent.com/Distributed-Validators-Synctems/fund-support-automation/main/setup.sh | bash`
+
+it will go through installation process and prepare configuration file.
+
+It is recommended to collect commission cashback collector script every 5 minutes (otherwise it is possible to catch errors in case if you are pruning old blocks. Please use `pruning = "default"` configuration option in the `app.toml` file.) 
+
+You can update configuration later by editing `address`, `config.sh` and `withdraw_addresses` files.
