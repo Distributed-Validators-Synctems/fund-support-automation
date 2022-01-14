@@ -26,7 +26,7 @@ I found it difficult to use this tool in conjunction with node inside docker con
 
 In order to install all required tools simply issue following command:
 
-`curl -s https://raw.githubusercontent.com/Distributed-Validators-Synctems/fund-support-automation/main/setup.sh | bash`
+`$ bash <(curl -s https://raw.githubusercontent.com/Distributed-Validators-Synctems/fund-support-automation/main/setup.sh)`
 
 it will go through installation process and prepare configuration file.
 
