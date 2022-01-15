@@ -25,7 +25,7 @@ dvs_supported_chains () {
     local NODE_SERVICE=$(basename $1)
 
     case $NODE_SERVICE in
-        cosmos)
+        saaged)
             DVS_FOUNDATION_ADDRESS="dvs_address"
             return
             ;;
