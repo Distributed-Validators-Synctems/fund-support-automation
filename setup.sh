@@ -282,10 +282,10 @@ add_cronjob_tasks () {
         echo "$RAND * * * * /bin/bash $PWD/fund-support-automation/distribute.sh >>$PWD/fund-support-automation/distribute.log 2>&1" >> $TMPFILE
     fi
 
+    echo "Following crontab job configuration will be added"
     cat $TMPFILE
     
-    #crontab mycron
-    #rm mycron
+    crontab $TMPFILE
 }
 
 install_required_software
