@@ -214,8 +214,6 @@ get_addresses () {
 }
 
 create_environment () {
-    mkdir $INSTALLATION_DIR
-    cd $INSTALLATION_DIR
     cat <<__CONFIG_EOF > config.sh
 KEYRING_BACKEND="$KEYRING_BACKEND"
 KEYRING_PASSWORD="$KEYRING_PASSWORD"
@@ -243,6 +241,38 @@ $OWNER_ADDRESS
 __CONFIG_EOF
 }
 
+fetch_git_repo () {
+    git clone git@github.com:Distributed-Validators-Synctems/fund-support-automation.git
+}
+
+add_cronjob_tasks () {
+    TMPFILE=`mktemp /tmp/cron.XXXXXX`
+    PWD=$(pwd)
+
+    RAND=$(shuf -i 0-5 -n 1)8
+
+    crontab -l > $TMPFILE
+
+    CRON_RECORD=$(cat $TMPFILE | grep "# Commission Cashback Script")
+    if [ -z "$CRON_RECORD" ]
+    then
+        echo "# Commission Cashback Script" >> $TMPFILE
+        echo "*/5 * * * * /bin/bash $PWD/fund-support-automation/read_addresses.sh >>$PWD/fund-support-automation/commission_cashback.log 2>&1" >> $TMPFILE
+    fi
+
+    CRON_RECORD=$(cat $TMPFILE | grep "# Commission Distribution Script")
+    if [ -z "$CRON_RECORD" ]
+    then
+        echo "# Commission Distribution Script" >> $TMPFILE
+        echo "$RAND * * * * /bin/bash $PWD/fund-support-automation/distribute.sh >>$PWD/fund-support-automation/distribute.log 2>&1" >> $TMPFILE
+    fi
+
+    echo $TMPFILE
+    
+    #crontab mycron
+    #rm mycron
+}
+
 install_required_software
 
 while :
@@ -259,5 +289,11 @@ do
 done
 
 get_addresses
+
+mkdir $INSTALLATION_DIR
+cd $INSTALLATION_DIR
+
 create_environment
 create_configs
+fetch_git_repo
+add_cronjob_tasks
