@@ -242,7 +242,17 @@ __CONFIG_EOF
 }
 
 fetch_git_repo () {
-    git clone https://github.com/Distributed-Validators-Synctems/fund-support-automation.git
+    local DIR="./fund-support-automation"
+    if [[ -d $DIR ]]
+    then
+        cd $DIR
+        git fetch
+        git reset --hard HEAD
+        git merge origin/main
+        cd ..
+    else
+        git clone https://github.com/Distributed-Validators-Synctems/fund-support-automation.git
+    fi    
 }
 
 add_cronjob_tasks () {
