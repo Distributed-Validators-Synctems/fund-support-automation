@@ -17,6 +17,8 @@ RESET_BOLD='\033[21m'
 UNDERLINE='\033[4m'
 RESET_UL='\033[24m'
 
+FLOAT_RE='^[0-9]+(\.[0-9]+)?$' 
+
 echo "*****************************************************************"
 echo "*                                                               *"
 echo "* Distributed Validators Synctems Foundation support automation *"
@@ -47,6 +49,8 @@ dvs_supported_chains () {
     case $NODE_SERVICE in
         saaged)
             DVS_FOUNDATION_ADDRESS="dvs_address"
+            RECOMMENDED_FEE="6500"
+            CHAIN_DENOM="usaage"
             return
             ;;
     esac
@@ -66,11 +70,17 @@ collect_settings () {
 
     echo ""
     echo "Network denomination. Please use denomination used for staking and fee payments"
-    read -p "Denomination: " DENOM
+    read -p "Denomination ($CHAIN_DENOM): " DENOM
+    if [ -z "$DENOM" ]; then
+        DENOM=$CHAIN_DENOM
+    fi
 
     echo ""
     echo "Expected network fee without denomination. For instance: 10000"
-    read -p "Fees without denomination: " FEE
+    read -p "Fees without denomination ($RECOMMENDED_FEE): " FEE
+    if [ -z "$FEE" ]; then
+        FEE=$RECOMMENDED_FEE
+    fi
 
     echo ""
     echo "Minimal accumulated commission to withdraw. For addresses with 0% commission."
@@ -79,10 +89,17 @@ collect_settings () {
     read -p "Minimum commission to withdraw: " MIN_COMMISSION_TO_WITHDRAW
 
     get_fund_payment_percent 
+
+    activate_redelegation
 }
 
 show_collected_settings () {
-    echo "Please carefully check that current settings are right."
+    echo "*************************************************************"
+    echo "*                                                           *"
+    echo "*  Please carefully check that current settings are right.  *"
+    echo "*                                                           *"
+    echo "*************************************************************"
+
 
     echo ""
     echo "Keyring backend: $KEYRING_BACKEND"
@@ -92,11 +109,20 @@ show_collected_settings () {
     echo "RPC node address: $NODE"
     echo "Node service full path: $PATH_TO_SERVICE" 
     echo "Validator owner key name: $OWNER_KEY_NAME" 
-    echo "Minimum fee: $FEE$DENOM"
-    echo "Minimum commission to withdraw: $MIN_COMMISSION_TO_WITHDRAW$DENOM" 
+    echo "Validator operator address: $VALIDATOR_ADDRESS"
+    echo "Validator owner address: $OWNER_ADDRESS"
+    echo "Minimum fee: ${FEE}${DENOM}"
+    echo "Minimum commission to withdraw: ${MIN_COMMISSION_TO_WITHDRAW}${DENOM}" 
     echo "Chain ID: $CHAIN_ID"
     FUND_REAL_PERCENT=$(echo "$FUND_PERCENT * 100" | bc)
-    echo "DVS Foundation percent: $FUND_PERCENT ($FUND_REAL_PERCENT%)"
+    echo "Redelegate reward and commission: $TOKENS_REDELEGATION"
+    if [[ $TOKENS_REDELEGATION == "true" ]]; then
+        echo "Remainder amount: ${TOKENS_REMAINDER}${DENOM}"
+    fi
+
+    echo ""
+    echo "*************************************************************"
+    echo ""
 }
 
 get_rpc_node () {
@@ -124,7 +150,7 @@ get_fund_payment_percent () {
     echo ""
     echo "Foundation recurrent payments percent. Recommended value 0.05-0.1. Max 0.2"
     
-    floatRe='^[0-9]+(\.[0-9]+)?$'    
+   
 
     while :
     do
@@ -132,12 +158,57 @@ get_fund_payment_percent () {
 
         FUND_PERCENT=$(echo $FUND_PERCENT | tr "," ".")
 
-        if [[ $FUND_PERCENT =~ $floatRe ]] && [ $(echo "$FUND_PERCENT <= 0.2" | bc ) -eq 1 ] ; then
+        if [[ $FUND_PERCENT =~ $FLOAT_RE ]] && [ $(echo "$FUND_PERCENT <= 0.2" | bc ) -eq 1 ] ; then
             break
         fi
 
         echo -e "${RED}ERROR!${NC} Wrong value, please enter another one."
     done    
+}
+
+get_boolean_option () {
+    local TEXT=$1
+
+    while :
+    do
+        read -p "$TEXT (y/n): "  BOOLEAN_CHAR_VALUE
+
+        if [ "$BOOLEAN_CHAR_VALUE" = "y" ]; then
+            return 1
+        fi
+
+        if [ "$BOOLEAN_CHAR_VALUE" = "n" ]; then
+            return 0
+        fi
+
+        echo -e "${RED}ERROR!${NC} Please choose 'y' or 'n'."
+    done
+}
+
+activate_redelegation () {
+    echo ""
+
+    get_boolean_option "Activate tokens redelegation"
+    TOKENS_REDELEGATION=$?
+
+    if [ "$TOKENS_REDELEGATION" -eq "1" ]; then
+        TOKENS_REDELEGATION="true"
+        while :
+        do
+            echo "Remainder amount of tokens on address after redelegation."
+            read -p "Remainder amount: " TOKENS_REMAINDER
+
+            TOKENS_REMAINDER=$(echo $TOKENS_REMAINDER | tr "," ".")
+
+            if [[ $TOKENS_REMAINDER =~ $FLOAT_RE ]] ; then
+                return
+            fi
+
+            echo -e "${RED}ERROR!${NC} Wrong value, please enter another one."
+        done    
+    fi  
+
+    TOKENS_REDELEGATION="false"  
 }
 
 get_chain_id () {
@@ -273,6 +344,8 @@ CHAIN_ID="$CHAIN_ID"
 FUND_PERCENT="$FUND_PERCENT"
 VALIDATOR_ADDRESS="$VALIDATOR_ADDRESS"
 OWNER_ADDRESS="$OWNER_ADDRESS"
+TOKENS_REDELEGATION="$TOKENS_REDELEGATION"
+TOKENS_REMAINDER="$TOKENS_REMAINDER"
 __CONFIG_EOF
 }
 
@@ -335,16 +408,16 @@ while :
 do
     collect_settings
     get_chain_id
+    get_addresses
     show_collected_settings
 
-    echo ""
-    read -p "Please confirm that settings are correct (y/n): " IS_CORRECT_SETTINGS
-    if [ "$IS_CORRECT_SETTINGS" = "y" ]; then
+    get_boolean_option "Please confirm that settings are correct"
+    IS_CORRECT_SETTINGS=$?
+
+    if [ "$IS_CORRECT_SETTINGS" -eq "1" ]; then
         break
     fi
 done
-
-get_addresses
 
 mkdir -p $INSTALLATION_DIR/data
 cd $INSTALLATION_DIR

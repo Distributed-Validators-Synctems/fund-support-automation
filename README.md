@@ -6,6 +6,7 @@ This tools is intendent to be used to automate support of the DVS Foundation fro
 1. Validator commission withdrawal
 2. Distribution of the commission on different addresses with custom share
 3. 0% commission for specific delegators
+4. Rewards and commissions redelegation
 
 ## Supported blockchains
 
