@@ -201,6 +201,7 @@ install_required_software () {
     sudo apt-get install curl jq bc git-core -y
 
     local ERROR_NO=$?
+    echo "ERROR_NO: $ERROR_NO"
  
     if (( $ERROR_NO > 0 )); then
         exit
