@@ -242,7 +242,7 @@ __CONFIG_EOF
 }
 
 fetch_git_repo () {
-    git clone git@github.com:Distributed-Validators-Synctems/fund-support-automation.git
+    git clone https://github.com/Distributed-Validators-Synctems/fund-support-automation.git
 }
 
 add_cronjob_tasks () {
@@ -267,7 +267,7 @@ add_cronjob_tasks () {
         echo "$RAND * * * * /bin/bash $PWD/fund-support-automation/distribute.sh >>$PWD/fund-support-automation/distribute.log 2>&1" >> $TMPFILE
     fi
 
-    echo $TMPFILE
+    cat $TMPFILE
     
     #crontab mycron
     #rm mycron
