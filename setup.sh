@@ -300,7 +300,7 @@ done
 
 get_addresses
 
-mkdir -p $INSTALLATION_DIR
+[ -d $INSTALLATION_DIR ] || mkdir $INSTALLATION_DIR
 cd $INSTALLATION_DIR
 
 create_environment
