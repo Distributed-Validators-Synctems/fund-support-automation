@@ -8,8 +8,14 @@
 # Supported operation systems: Debian, Ubuntu
 
 # Colors
-RED='\033[0;31m'
+RED='\033[31m'
+GREEN='\033[32m'
 NC='\033[0m' # No Color
+
+BOLD='\033[1m'
+RESET_BOLD='\033[21m'
+UNDERLINE='\033[4m'
+RESET_UL='\033[24m'
 
 echo "*****************************************************************"
 echo "*                                                               *"
@@ -18,12 +24,17 @@ echo "*                                                               *"
 echo "*****************************************************************"
 echo ""
 echo "Welcome to the DVS Foundation support installation script. This script will collect all the data required to run automation."
-echo -e "${RED}NO${NC} sensitive information will be send to 3rd party services and will be used ${RED}INSIDE${NC} current server only."
+echo -e "${RED}${BOLD}NO${NC} sensitive information will be send to 3rd party services and will be used ${RED}${BOLD}INSIDE${NC} current server only."
 echo "Please run this script under same user you are using to run blockchain node."
 echo ""
-echo "Script sources are avaiable on the https://github.com/Distributed-Validators-Synctems/fund-support-automation/ repository."
+echo -e "Script sources are avaiable on the ${UNDERLINE}https://github.com/Distributed-Validators-Synctems/fund-support-automation/${NC} repository."
+echo ""
+echo -e "Please aware that this tool is ${RED}${BOLD}NOT${NC} compatible with any kind of redelegation/reinvestment scripts. Please turn it off before using this tool."
+echo ""
+echo -e "You always can interupt setup process by pressing ${BOLD}Ctrl+C${NC}."
 echo ""
 echo "This script may ask you for sudo password because it is required to install additional software: curl, jq, git-core and bc"
+echo "=================================================================="
 
 DEFAULT_KEYRING_BACKEND="os"
 DEFAULT_NODE="http://localhost:26657"
@@ -199,7 +210,9 @@ get_validator_owner_name () {
 
     KEYS_LIST=$(eval $KEYS_LIST_CMD | jq '.[].name')
 
+    echo -en $GREEN
     echo $KEYS_LIST | tr " " "\n"
+    echo -en $NC
 
     while :
     do

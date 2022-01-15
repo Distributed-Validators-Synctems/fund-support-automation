@@ -19,7 +19,8 @@ This tools is intendent to be used to automate support of the DVS Foundation fro
 
 ## Known issues
 
-I found it difficult to use this tool in conjunction with node inside docker container.
+I found it difficult to use this tool in conjunction with node inside docker container. 
+Also please aware that this tool is **NOT** compatible with any kind of redelegation/reinvestment scripts. Please turn it off before using this tool.
 
 
 ## Usage
