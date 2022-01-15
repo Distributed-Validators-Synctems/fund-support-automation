@@ -28,7 +28,7 @@ In order to install all required tools simply issue following command:
 
 `$ bash <(curl -s https://raw.githubusercontent.com/Distributed-Validators-Synctems/fund-support-automation/main/setup.sh)`
 
-it will go through installation process and prepare configuration file.
+it will go through installation process and prepare configuration files.
 
 It is recommended to collect commission cashback collector script every 5 minutes (otherwise it is possible to catch errors in case if you are pruning old blocks. Please use `pruning = "default"` configuration option in the `app.toml` file.) 
 
