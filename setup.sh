@@ -21,7 +21,7 @@ echo "Welcome to the DVS Foundation support installation script. This script wil
 echo -e "${RED}NO${NC} sensitive information will be send to 3rd party services and will be used ${RED}INSIDE${NC} current server only."
 echo "Please run this script under same user you are using to run blockchain node."
 echo ""
-echo "Script source are avaiable on the https://github.com/Distributed-Validators-Synctems/fund-support-automation/ repository."
+echo "Script sources are avaiable on the https://github.com/Distributed-Validators-Synctems/fund-support-automation/ repository."
 echo ""
 echo "This script may ask you for sudo password because it is required to install additional software: curl, jq, git-core and bc"
 
