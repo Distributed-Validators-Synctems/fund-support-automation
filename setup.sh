@@ -16,7 +16,24 @@ echo "This script may ask you for sudo password because it is required to instal
 DEFAULT_KEYRING_BACKEND="os"
 DEFAULT_NODE="http://localhost:26657"
 INSTALLATION_DIR="dvs-fund-support"
-DVS_FOUNDATION_ADDRESS="dvs_address"
+
+# Colors
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+dvs_supported_chains () {
+    local NODE_SERVICE=$(basename $1)
+
+    case $NODE_SERVICE in
+        cosmos)
+            DVS_FOUNDATION_ADDRESS="dvs_address"
+            return
+            ;;
+    esac
+
+    echo -e "${RED}ERROR!${NC} This chain is not supported ($NODE_SERVICE)."
+    exit 1
+}
 
 collect_settings () {
     get_rpc_node
@@ -159,6 +176,8 @@ find_node_executable () {
 
         echo "Unfortunately Cosmos SDK node service executable was not found. Try another name or full path."
     done
+
+    dvs_supported_chains $PATH_TO_SERVICE
 }
 
 get_validator_owner_name () {
