@@ -7,9 +7,21 @@
 
 # Supported operation systems: Debian, Ubuntu
 
+# Colors
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+echo "*****************************************************************"
+echo "*                                                               *"
+echo "* Distributed Validators Synctems Foundation support automation *"
+echo "*                                                               *"
+echo "*****************************************************************"
+echo ""
 echo "Welcome to the DVS Foundation support installation script. This script will collect all the data required to run automation."
-echo "NO sensitive information will be send to 3rd party services and will be used INSIDE current server only."
+echo -e "${RED}NO${NC} sensitive information will be send to 3rd party services and will be used ${RED}INSIDE${NC} current server only."
 echo "Please run this script under same user you are using to run blockchain node."
+echo ""
+echo "Script source are avaiable on the https://github.com/Distributed-Validators-Synctems/fund-support-automation/ repository."
 echo ""
 echo "This script may ask you for sudo password because it is required to install additional software: curl, jq, git-core and bc"
 
@@ -17,9 +29,6 @@ DEFAULT_KEYRING_BACKEND="os"
 DEFAULT_NODE="http://localhost:26657"
 INSTALLATION_DIR="dvs-fund-support"
 
-# Colors
-RED='\033[0;31m'
-NC='\033[0m' # No Color
 
 dvs_supported_chains () {
     local NODE_SERVICE=$(basename $1)
@@ -96,7 +105,7 @@ get_rpc_node () {
             break
         fi
 
-        echo "RPC node is not accessible. Try another URL."
+        echo -e "${RED}ERROR!${NC} RPC node is not accessible. Try another URL."
     done    
 }
 
@@ -116,7 +125,7 @@ get_fund_payment_percent () {
             break
         fi
 
-        echo "Wrong value, please enter another one."
+        echo -e "${RED}ERROR!${NC} Wrong value, please enter another one."
     done    
 }
 
@@ -150,7 +159,7 @@ get_keyring_settings () {
             break
         fi
 
-        echo "Wrong keyring backend or password, please try again."
+        echo -e "${RED}ERROR!${NC} Wrong keyring backend or password, please try again."
     done    
 }
 
@@ -174,7 +183,7 @@ find_node_executable () {
             break
         fi
 
-        echo "Unfortunately Cosmos SDK node service executable was not found. Try another name or full path."
+        echo -e "${RED}ERROR!${NC} Unfortunately Cosmos SDK node service executable was not found. Try another name or full path."
     done
 
     dvs_supported_chains $PATH_TO_SERVICE
@@ -200,7 +209,7 @@ get_validator_owner_name () {
             break
         fi
 
-        echo "Unfortunately this key was not found. Please choose another."
+        echo -e "${RED}ERROR!${NC} Unfortunately this key was not found. Please choose another."
     done
 }
 
@@ -304,7 +313,7 @@ add_cronjob_tasks () {
     echo "Following crontab job configuration will be added"
     cat $TMPFILE
     
-    crontab $TMPFILE
+    #crontab $TMPFILE
 }
 
 install_required_software
