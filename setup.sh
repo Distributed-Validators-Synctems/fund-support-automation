@@ -53,6 +53,12 @@ dvs_supported_chains () {
             CHAIN_DENOM="usaage"
             return
             ;;
+        sifnoded)
+            DVS_FOUNDATION_ADDRESS="dvs_address"
+            RECOMMENDED_FEE="130000000000000000"
+            CHAIN_DENOM="rowan"
+            return
+            ;;
     esac
 
     echo -e "${RED}ERROR!${NC} This chain is not supported ($NODE_SERVICE)."
