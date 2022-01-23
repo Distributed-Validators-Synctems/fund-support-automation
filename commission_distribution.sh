@@ -31,9 +31,9 @@ generate_send_tx () {
 
 generate_delegate_tx () {
     local DELEGATOR_ADDRESS=$1
-    local VALIDATOR_ADDRESS=$1
-    local DENOM=$1
-    local AMOUNT=$1
+    local VALIDATOR_ADDRESS=$2
+    local DENOM=$3
+    local AMOUNT=$4
 
     local DELEGATE_TX=$(cat ./templates/delegate-tx-json.tmpl | sed "s/<!#DELEGATOR_ADDRESS>/${DELEGATOR_ADDRESS}/g")
     local DELEGATE_TX=$(echo $DELEGATE_TX | sed "s/<!#VALIDATOR_ADDRESS>/${VALIDATOR_ADDRESS}/g")
