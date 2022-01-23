@@ -21,12 +21,26 @@ generate_send_tx () {
     local ADDRESS=$1
     local CASHBACK=$2
 
-    local SEND_TX=$(cat send-tx-json.tmpl | sed "s/<!#FROM_ADDRESS>/${OWNER_ADDRESS}/g")
+    local SEND_TX=$(cat ./templates/send-tx-json.tmpl | sed "s/<!#FROM_ADDRESS>/${OWNER_ADDRESS}/g")
     local SEND_TX=$(echo $SEND_TX | sed "s/<!#TO_ADDRESS>/${ADDRESS}/g")
     local SEND_TX=$(echo $SEND_TX | sed "s/<!#DENOM>/${DENOM}/g")
     local SEND_TX=$(echo $SEND_TX | sed "s/<!#AMOUNT>/${CASHBACK}/g")  
 
     TXS_BATCH=${TXS_BATCH},${SEND_TX}
+}
+
+generate_delegate_tx () {
+    local DELEGATOR_ADDRESS=$1
+    local VALIDATOR_ADDRESS=$1
+    local DENOM=$1
+    local AMOUNT=$1
+
+    local DELEGATE_TX=$(cat ./templates/delegate-tx-json.tmpl | sed "s/<!#DELEGATOR_ADDRESS>/${DELEGATOR_ADDRESS}/g")
+    local DELEGATE_TX=$(echo $DELEGATE_TX | sed "s/<!#VALIDATOR_ADDRESS>/${VALIDATOR_ADDRESS}/g")
+    local DELEGATE_TX=$(echo $DELEGATE_TX | sed "s/<!#DENOM>/${DENOM}/g")
+    local DELEGATE_TX=$(echo $DELEGATE_TX | sed "s/<!#AMOUNT>/${AMOUNT}/g")  
+
+    TXS_BATCH=${TXS_BATCH},${DELEGATE_TX}
 }
 
 VALIDATOR_COMMISSION=$(${PATH_TO_SERVICE} q distribution commission $VALIDATOR_ADDRESS --node $NODE -o json | \
@@ -49,6 +63,7 @@ fi
 COMMISSION_WITHDRAW=0
 TXS_BATCH=""
 CSV_LINE="\""`date`"\";\"$MIN_COMMISSION_TO_WITHDRAW\";\"$VALIDATOR_COMMISSION\""
+# Return accumulated commission to selected delegators
 while read -r address; do
     echo "Processing address $address..."
 
@@ -79,6 +94,7 @@ echo "COMMISSION_WITHDRAW: $COMMISSION_WITHDRAW"
 echo "COMMISSION_REMAINDER: $COMMISSION_REMAINDER"
 
 WITHDRAW_ADDRESSES_AMOUNT=$(cat $WITHDRAW_ADDRESSES_FILE | jq 'length - 1')
+COMMISSION_LEFT=$COMMISSION_REMAINDER
 
 for ADDRESS_IDX in $( eval echo {0..$WITHDRAW_ADDRESSES_AMOUNT} )
 do
@@ -95,15 +111,30 @@ do
     CSV_LINE="$CSV_LINE;\"$WITHDRAW_ADDRESS\";\"$COMMISSION_SHARE\""
 
     echo "SHARE WITHDRAWAL: $WITHDRAW_ADDRESS | $SHARE | $COMMISSION_SHARE"
+
+    COMMISSION_LEFT=$(echo "$COMMISSION_LEFT - $COMMISSION_SHARE" | bc -l) #"
     
     generate_send_tx $WITHDRAW_ADDRESS $COMMISSION_SHARE
 done
 
 echo $CSV_LINE >> payments.csv
 
+if [ "$TOKENS_REDELEGATION" = "true" ]; then
+    OWNER_BALANCE=$(${PATH_TO_SERVICE} q bank balances $OWNER_ADDRESS --node $NODE -o json | \
+        /usr/bin/jq ".balances[] | select(.denom | contains(\"$DENOM\")).amount | tonumber")
+
+    OWNER_REWARD=$(${PATH_TO_SERVICE} q distribution rewards $OWNER_ADDRESS $VALIDATOR_ADDRESS --node $NODE -o json | \
+        /usr/bin/jq ".rewards[] | select(.denom | contains(\"$DENOM\")).amount | tonumber")
+
+    AMOUNT_TO_DELEGATE=$(echo $OWNER_BALANCE+$OWNER_REWARD+$COMMISSION_LEFT-$TOKENS_REMAINDER | bc | cut -f1 -d".")
+
+    echo "Redelegating remainded tokens..."
+    generate_delegate_tx $OWNER_ADDRESS $VALIDATOR_ADDRESS $DENOM $AMOUNT_TO_DELEGATE
+fi
+
 echo "Broadcasting withdrawal transaction..."
-sed "s/<!#VALIDATOR_ADDRESS>/${VALIDATOR_ADDRESS}/g" distribution-json.tmpl > ${TRANSACTION_OUTPUT_DIR}/distribution.json
-sed -i "s/<!#SEND_TXS_BATCH>/${TXS_BATCH}/g" distribution.json
+sed "s/<!#VALIDATOR_ADDRESS>/${VALIDATOR_ADDRESS}/g" ./templates/distribution-json.tmpl > ${TRANSACTION_OUTPUT_DIR}/distribution.json
+sed -i "s/<!#TXS_BATCH>/${TXS_BATCH}/g" distribution.json
 sed -i "s/<!#DENOM>/${DENOM}/g" distribution.json
 sed -i "s/<!#FEE>/${FEE}/g" distribution.json
 
