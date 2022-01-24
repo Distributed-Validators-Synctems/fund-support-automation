@@ -285,7 +285,7 @@ get_keyring_settings () {
         local KEYS_LIST_CMD=$FUNC_RETURN
 
         echo "cmd result"
-        EVAL_CMD="${KEYS_LIST_CMD} |& jq"
+        EVAL_CMD="${KEYS_LIST_CMD} |& jq '.'"
         echo "CMD: ${EVAL_CMD}"        
         echo $(eval "${EVAL_CMD}")
 
