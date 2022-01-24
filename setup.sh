@@ -50,12 +50,14 @@ dvs_supported_chains () {
         saaged)
             DVS_FOUNDATION_ADDRESS="dvs_address"
             RECOMMENDED_FEE="6500"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="100000"
             CHAIN_DENOM="usaage"
             return
             ;;
         sifnoded)
             DVS_FOUNDATION_ADDRESS="dvs_address"
             RECOMMENDED_FEE="130000000000000000"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="1500000000000000000"
             CHAIN_DENOM="rowan"
             return
             ;;
@@ -83,16 +85,15 @@ collect_settings () {
 
     echo ""
     echo "Expected network fee without denomination. For instance: 10000"
-    read -p "Fees without denomination ($RECOMMENDED_FEE): " FEE
-    if [ -z "$FEE" ]; then
-        FEE=$RECOMMENDED_FEE
-    fi
+    read_number_value "Fees without denomination" $RECOMMENDED_FEE
+    FEE=$FUNC_RETURN
 
     echo ""
     echo "Minimal accumulated commission to withdraw. For addresses with 0% commission."
     echo "Script will accumulate commissions per address and will make a payout once accumulated value riches this number."
     echo "Should be high enough otherwise script will pay too small amount and transaction fee will too high"
-    read -p "Minimum commission to withdraw: " MIN_COMMISSION_TO_WITHDRAW
+    read_number_value "Minimum commission to withdraw" $RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW
+    MIN_COMMISSION_TO_WITHDRAW=$FUNC_RETURN
 
     get_fund_payment_percent 
 
@@ -170,6 +171,37 @@ get_fund_payment_percent () {
 
         echo -e "${RED}ERROR!${NC} Wrong value, please enter another one."
     done    
+}
+
+read_number_value () {
+    local TITLE=$1
+    local DEFAULT=$2
+
+    if ! [ -z "$DEFAULT" ]
+    then
+        local TITLE="${DEFAULT_KEYRING_BACKEND} (${DEFAULT})"
+    fi
+
+    while :
+    do
+        read -p "${TITLE}: " NUMBER_VALUE
+
+        if ! [ -z "$DEFAULT" ] && [ -z "$NUMBER_VALUE" ]
+        then
+            NUMBER_VALUE=$DEFAULT
+            break
+        fi
+
+        NUMBER_VALUE=$(echo $NUMBER_VALUE | tr "," ".")
+
+        if [[ $NUMBER_VALUE =~ $FLOAT_RE ]] ; then
+            break
+        fi
+
+        echo -e "${RED}ERROR!${NC} Wrong number value, please enter another one."
+    done   
+
+    FUNC_RETURN=$NUMBER_VALUE 
 }
 
 get_boolean_option () {
