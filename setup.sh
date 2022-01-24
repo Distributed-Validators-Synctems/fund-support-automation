@@ -284,16 +284,7 @@ get_keyring_settings () {
         execute_command "keys list --keyring-backend $KEYRING_BACKEND"
         local KEYS_LIST_CMD=$FUNC_RETURN
 
-        echo "cmd result"
-        EVAL_CMD="${KEYS_LIST_CMD} |& jq '.'"
-        echo "CMD: ${EVAL_CMD}"        
-        echo $(eval "${EVAL_CMD}")
-
-        echo $KEYS_LIST_CMD
         local KEYS_LIST=$(eval $KEYS_LIST_CMD |& jq '.' 2>/dev/null)
-
-        echo "Keys list output"
-        echo $KEYS_LIST
 
         if ! [ -z "$KEYS_LIST" ]
         then
