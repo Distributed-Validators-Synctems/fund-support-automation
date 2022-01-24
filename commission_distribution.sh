@@ -150,11 +150,10 @@ SIGN_CMD=$FUNC_RETURN
 
 eval $SIGN_CMD
 
-catch_error_end_exit $CHAIN_ID
+catch_error_and_exit $CHAIN_ID
 
 $PATH_TO_SERVICE tx broadcast $TRANSACTION_OUTPUT_DIR/signed.json \
     --chain-id $CHAIN_ID \
-    --broadcast-mode async \
     --node $NODE
 
-catch_error_end_exit $CHAIN_ID
+catch_error_and_notify $CHAIN_ID

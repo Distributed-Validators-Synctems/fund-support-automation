@@ -76,17 +76,34 @@ execute_command () {
     FUNC_RETURN=$CMD
 }
 
-lock_and_notify () {
+notify () {
     local CHAIN_ID=$1 
 
-    touch $LOCK_FILE
     # Send error message to notification service. "send_error_message" should be implemented in the '../notification.sh'
     if [[ $(type -t send_error_message) == function ]]; then
         send_error_message $CHAIN_ID
     fi    
 }
 
-catch_error_end_exit () {
+lock_and_notify () {
+    local CHAIN_ID=$1 
+
+    touch $LOCK_FILE
+    notify $CHAIN_ID 
+}
+
+catch_error_and_notify () {
+    local ERROR_NO=$?
+    echo "Error: $ERROR_NO"
+    local CHAIN_ID=$1    
+ 
+    if (( $ERROR_NO > 0 )); then
+        notify $CHAIN_ID
+        exit
+    fi
+}
+
+catch_error_and_exit () {
     local ERROR_NO=$?
     echo "Error: $ERROR_NO"
     local CHAIN_ID=$1    
