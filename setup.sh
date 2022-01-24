@@ -285,7 +285,7 @@ get_keyring_settings () {
         local KEYS_LIST_CMD=$FUNC_RETURN
 
         echo "cmd result"
-        echo $(eval "$KEYS_LIST_CMD 2>&1 | jq")
+        echo $(eval "$KEYS_LIST_CMD | jq")
 
         echo $KEYS_LIST_CMD
         local KEYS_LIST=$(eval $KEYS_LIST_CMD 2>&1 | jq 2>/dev/null)
