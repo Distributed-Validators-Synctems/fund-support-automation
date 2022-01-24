@@ -282,10 +282,10 @@ get_keyring_settings () {
         fi
 
         execute_command "keys list --keyring-backend $KEYRING_BACKEND"
-        KEYS_LIST_CMD=$FUNC_RETURN
+        local KEYS_LIST_CMD=$FUNC_RETURN
 
         echo $KEYS_LIST_CMD
-        KEYS_LIST=$(eval $KEYS_LIST_CMD 2>&1 | jq 2>/dev/null)
+        local KEYS_LIST=$(eval $KEYS_LIST_CMD 2>&1 | jq 2>/dev/null)
 
         echo "Keys list output"
         echo $KEYS_LIST
@@ -311,7 +311,7 @@ find_node_executable () {
             NODE_SERVICE_NAME=$(which $NODE_SERVICE_NAME)
         fi 
 
-        SDK_VERSION=$($NODE_SERVICE_NAME version --long 2>&1 | grep cosmos_sdk_version )      
+        local SDK_VERSION=$($NODE_SERVICE_NAME version --long 2>&1 | grep cosmos_sdk_version )      
 
         if ! [ -z "$SDK_VERSION" ]; then
             PATH_TO_SERVICE=$NODE_SERVICE_NAME
@@ -331,9 +331,9 @@ get_validator_owner_name () {
     echo "Available keys:"
 
     execute_command "keys list --keyring-backend $KEYRING_BACKEND"
-    KEYS_LIST_CMD=$FUNC_RETURN
+    local KEYS_LIST_CMD=$FUNC_RETURN
 
-    KEYS_LIST=$(eval $KEYS_LIST_CMD | jq '.[].name')
+    local KEYS_LIST=$(eval $KEYS_LIST_CMD | jq '.[].name')
 
     echo -en $GREEN
     echo $KEYS_LIST | tr " " "\n"
