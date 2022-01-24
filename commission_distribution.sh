@@ -22,9 +22,9 @@ generate_send_tx () {
     local CASHBACK=$2
 
     local SEND_TX=$(cat ./templates/send-tx-json.tmpl | sed "s/<!#FROM_ADDRESS>/${OWNER_ADDRESS}/g")
-    local SEND_TX=$(echo "$SEND_TX" | sed "s/<!#TO_ADDRESS>/${ADDRESS}/g")
-    local SEND_TX=$(echo "$SEND_TX" | sed "s/<!#DENOM>/${DENOM}/g")
-    local SEND_TX=$(echo "$SEND_TX" | sed "s/<!#AMOUNT>/${CASHBACK}/g")  
+    local SEND_TX=$(echo $SEND_TX | sed "s/<!#TO_ADDRESS>/${ADDRESS}/g")
+    local SEND_TX=$(echo $SEND_TX | sed "s/<!#DENOM>/${DENOM}/g")
+    local SEND_TX=$(echo $SEND_TX | sed "s/<!#AMOUNT>/${CASHBACK}/g")  
 
     TXS_BATCH=${TXS_BATCH},${SEND_TX}
 }
@@ -36,9 +36,9 @@ generate_delegate_tx () {
     local AMOUNT=$4
 
     local DELEGATE_TX=$(cat ./templates/delegate-tx-json.tmpl | sed "s/<!#DELEGATOR_ADDRESS>/${DELEGATOR_ADDRESS}/g")
-    local DELEGATE_TX=$(echo "$DELEGATE_TX" | sed "s/<!#VALIDATOR_ADDRESS>/${VALIDATOR_ADDRESS}/g")
-    local DELEGATE_TX=$(echo "$DELEGATE_TX" | sed "s/<!#DENOM>/${DENOM}/g")
-    local DELEGATE_TX=$(echo "$DELEGATE_TX" | sed "s/<!#AMOUNT>/${AMOUNT}/g")  
+    local DELEGATE_TX=$(echo $DELEGATE_TX | sed "s/<!#VALIDATOR_ADDRESS>/${VALIDATOR_ADDRESS}/g")
+    local DELEGATE_TX=$(echo $DELEGATE_TX | sed "s/<!#DENOM>/${DENOM}/g")
+    local DELEGATE_TX=$(echo $DELEGATE_TX | sed "s/<!#AMOUNT>/${AMOUNT}/g")  
 
     TXS_BATCH=${TXS_BATCH},${DELEGATE_TX}
 }
