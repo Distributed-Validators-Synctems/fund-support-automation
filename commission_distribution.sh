@@ -128,8 +128,10 @@ if [ "$TOKENS_REDELEGATION" = "true" ]; then
 
     AMOUNT_TO_DELEGATE=$(echo $OWNER_BALANCE+$OWNER_REWARD+$COMMISSION_LEFT-$TOKENS_REMAINDER | bc | cut -f1 -d".")
 
-    echo "Redelegating remainded tokens..."
-    generate_delegate_tx $OWNER_ADDRESS $VALIDATOR_ADDRESS $DENOM $AMOUNT_TO_DELEGATE
+    if (( $(echo "$AMOUNT_TO_DELEGATE > $MIN_COMMISSION_TO_WITHDRAW" | bc ) == 1 )); then
+        echo "Redelegating remainded tokens..."
+        generate_delegate_tx $OWNER_ADDRESS $VALIDATOR_ADDRESS $DENOM $AMOUNT_TO_DELEGATE
+    fi    
 fi
 
 echo "Broadcasting withdrawal transaction..."
