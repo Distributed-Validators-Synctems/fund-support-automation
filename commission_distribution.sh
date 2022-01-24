@@ -158,4 +158,4 @@ $PATH_TO_SERVICE tx broadcast $TRANSACTION_OUTPUT_DIR/signed.json \
     --chain-id $CHAIN_ID \
     --node $NODE
 
-lock_and_notify $CHAIN_ID
+catch_error_and_notify $CHAIN_ID
