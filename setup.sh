@@ -436,14 +436,14 @@ add_cronjob_tasks () {
     if [ -z "$CRON_RECORD" ]
     then
         echo "# DVS Fund Support: Commission Cashback Script" >> $TMPFILE
-        echo "*/5 * * * * /bin/bash $PWD/fund-support-automation/read_addresses.sh >>$PWD/fund-support-automation/commission_cashback.log 2>&1" >> $TMPFILE
+        echo "*/5 * * * * /bin/bash $PWD/fund-support-automation/read_addresses.sh >>$PWD/commission_cashback.log 2>&1" >> $TMPFILE
     fi
 
     CRON_RECORD=$(cat $TMPFILE | grep "# Commission Distribution Script")
     if [ -z "$CRON_RECORD" ]
     then
         echo "# DVS Fund Support: Commission Distribution Script" >> $TMPFILE
-        echo "$RAND * * * * /bin/bash $PWD/fund-support-automation/distribute.sh >>$PWD/fund-support-automation/distribute.log 2>&1" >> $TMPFILE
+        echo "$RAND * * * * /bin/bash $PWD/fund-support-automation/distribute.sh >>$PWD/distribute.log 2>&1" >> $TMPFILE
     fi
 
     echo "Following crontab job configuration will be added"
