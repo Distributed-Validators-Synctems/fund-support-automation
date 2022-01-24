@@ -163,6 +163,8 @@ get_fund_payment_percent () {
     do
         read -p "Foundation percent: " FUND_PERCENT
 
+        FUND_PERCENT=$(echo "$FUND_PERCENT" | xargs)
+
         FUND_PERCENT=$(echo $FUND_PERCENT | tr "," ".")
 
         if [[ $FUND_PERCENT =~ $FLOAT_RE ]] && [ $(echo "$FUND_PERCENT <= 0.2" | bc ) -eq 1 ] ; then
@@ -179,12 +181,14 @@ read_number_value () {
 
     if ! [ -z "$DEFAULT" ]
     then
-        local TITLE="${DEFAULT_KEYRING_BACKEND} (${DEFAULT})"
+        local TITLE="${TITLE} (${DEFAULT})"
     fi
 
     while :
     do
         read -p "${TITLE}: " NUMBER_VALUE
+
+        NUMBER_VALUE=$(echo "$NUMBER_VALUE" | xargs)
 
         if ! [ -z "$DEFAULT" ] && [ -z "$NUMBER_VALUE" ]
         then
