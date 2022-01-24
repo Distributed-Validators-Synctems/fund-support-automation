@@ -290,7 +290,7 @@ get_keyring_settings () {
         echo $(eval "${EVAL_CMD}")
 
         echo $KEYS_LIST_CMD
-        local KEYS_LIST=$(eval $KEYS_LIST_CMD 2>&1 | jq 2>/dev/null)
+        local KEYS_LIST=$(eval $KEYS_LIST_CMD |& jq '.' 2>/dev/null)
 
         echo "Keys list output"
         echo $KEYS_LIST
