@@ -64,7 +64,7 @@ dvs_supported_chains () {
         panacead)
             DVS_FOUNDATION_ADDRESS="panacea13lam5943597rkcg92wgsa5hmp443nuzg4lzrm2"
             RECOMMENDED_FEE="1300000"
-            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="2000000"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="5000000"
             CHAIN_DENOM="umed"
             return
             ;;
