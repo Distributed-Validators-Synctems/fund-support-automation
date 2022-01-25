@@ -126,7 +126,7 @@ if [ "$TOKENS_REDELEGATION" = "true" ]; then
     OWNER_REWARD=$(${PATH_TO_SERVICE} q distribution rewards $OWNER_ADDRESS $VALIDATOR_ADDRESS --node $NODE -o json | \
         /usr/bin/jq ".rewards[] | select(.denom | contains(\"$DENOM\")).amount | tonumber")
 
-    AMOUNT_TO_DELEGATE=$(echo $OWNER_BALANCE+$OWNER_REWARD+$COMMISSION_LEFT-($TOKENS_REMAINDER+$FEE) | bc | cut -f1 -d".")
+    AMOUNT_TO_DELEGATE=$(echo $OWNER_BALANCE+$OWNER_REWARD+$COMMISSION_LEFT-$TOKENS_REMAINDER-$FEE | bc | cut -f1 -d".")
 
     if (( $(echo "$AMOUNT_TO_DELEGATE > $MIN_COMMISSION_TO_WITHDRAW" | bc ) == 1 )); then
         echo "Redelegating remainded tokens..."
