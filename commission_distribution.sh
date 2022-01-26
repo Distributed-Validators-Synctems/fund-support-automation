@@ -4,6 +4,8 @@ source ../config.sh
 
 source ./utils.sh
 
+get_chain_id $NODE
+
 TRANSACTION_OUTPUT_DIR=${1:-"."}
 
 ADDRESSES_COUNT=$(wc -l $ADDRESSES_FILE | cut -f1 -d" ")

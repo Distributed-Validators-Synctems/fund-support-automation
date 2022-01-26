@@ -64,6 +64,12 @@ get_total_reward () {
     fi
 }
 
+get_chain_id () {
+    local NODE=$1
+
+    CHAIN_ID=$(curl -s ${NODE}/status | jq -r '.result.node_info.network')
+}
+
 execute_command () {
     local CMD_PARAMS=$1
 

@@ -127,7 +127,6 @@ show_collected_settings () {
     echo "Validator owner address: $OWNER_ADDRESS"
     echo "Minimum fee: ${FEE}${DENOM}"
     echo "Minimum commission to withdraw: ${MIN_COMMISSION_TO_WITHDRAW}${DENOM}" 
-    echo "Chain ID: $CHAIN_ID"
     FUND_REAL_PERCENT=$(echo "$FUND_PERCENT * 100" | bc)
     echo "Redelegate reward and commission: $TOKENS_REDELEGATION"
     if [[ $TOKENS_REDELEGATION == "true" ]]; then
@@ -260,10 +259,6 @@ activate_redelegation () {
     TOKENS_REDELEGATION="false"  
 }
 
-get_chain_id () {
-    CHAIN_ID=$(curl -s localhost:26657/status | jq -r '.result.node_info.network')
-}
-
 get_keyring_settings () {
     echo ""
     echo "Keyring backend, possible values: os, file, test. Default '$DEFAULT_KEYRING_BACKEND'"
@@ -390,7 +385,6 @@ OWNER_KEY_NAME="$OWNER_KEY_NAME"
 DENOM="$DENOM"
 FEE="$FEE"
 MIN_COMMISSION_TO_WITHDRAW="$MIN_COMMISSION_TO_WITHDRAW"
-CHAIN_ID="$CHAIN_ID"
 FUND_PERCENT="$FUND_PERCENT"
 VALIDATOR_ADDRESS="$VALIDATOR_ADDRESS"
 OWNER_ADDRESS="$OWNER_ADDRESS"
@@ -458,7 +452,6 @@ install_required_software
 while :
 do
     collect_settings
-    get_chain_id
     get_addresses
     show_collected_settings
 
