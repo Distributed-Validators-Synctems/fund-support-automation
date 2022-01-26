@@ -422,6 +422,8 @@ add_cronjob_tasks () {
     TMPFILE=`mktemp /tmp/cron.XXXXXX`
     PWD=$(pwd)
 
+    # It is better to run distribution script at any 8th minute within an hour, like: 18, 28, 38 etc
+    # This is done to avoid cashback and distribution processes overlapping 
     RAND=$(shuf -i 0-5 -n 1)8
 
     crontab -l > $TMPFILE
