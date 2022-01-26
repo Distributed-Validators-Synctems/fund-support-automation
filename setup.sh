@@ -426,7 +426,7 @@ add_cronjob_tasks () {
 
     crontab -l > $TMPFILE
 
-    CRON_RECORD=$(cat $TMPFILE | grep "# Commission Cashback Script")
+    CRON_RECORD=$(cat $TMPFILE | grep "# DVS Fund Support")
     if [ -z "$CRON_RECORD" ]
     then
         echo "# DVS Fund Support: Commission Cashback Script" >> $TMPFILE
