@@ -83,11 +83,11 @@ execute_command () {
 }
 
 notify () {
-    local CHAIN_ID=$1 
+    local MESSAGE=$1 
 
-    # Send error message to notification service. "send_error_message" should be implemented in the '../notification.sh'
-    if [[ $(type -t send_error_message) == function ]]; then
-        send_error_message $CHAIN_ID
+    # Send notification message to notification service. "send_notification_message" should be implemented in the '../notification.sh'
+    if [[ $(type -t send_notification_message) == function ]]; then
+        send_notification_message "${MESSAGE}"
     fi    
 }
 
@@ -95,27 +95,116 @@ lock_and_notify () {
     local CHAIN_ID=$1 
 
     touch $LOCK_FILE
-    notify $CHAIN_ID 
+    notify_signing_failed $CHAIN_ID 
 }
 
-catch_error_and_notify () {
-    local ERROR_NO=$?
-    echo "Error: $ERROR_NO"
-    local CHAIN_ID=$1    
- 
-    if (( $ERROR_NO > 0 )); then
-        notify $CHAIN_ID
+network_up_and_synced () {
+    local NODE=$1
+
+    local NODE_STATUS_CODE=$(curl -m 5 -o /dev/null -s -w "%{http_code}\n" $NODE/status)
+
+    if (( $NODE_STATUS_CODE != 200 )); then
+        notify_chain_node_not_reachable $NODE
         exit
     fi
+
+    local CHAIN_STATUS=$(curl -s ${NODE}/status)
+    local CHAIN_ID=$(echo $CHAIN_STATUS | jq -r '.result.node_info.network')
+
+    local CHAIN_SYNC_STATE=$(echo $CHAIN_STATUS | jq '.result.sync_info.catching_up')
+    if [[ "$CHAIN_SYNC_STATE" == "true" ]]
+    then
+        
+        notify_chain_syncing $CHAIN_ID
+        exit
+    fi
+
+    local LATEST_BLOCK_TIME=$(echo $CHAIN_STATUS | jq -r '.result.sync_info.latest_block_time')
+
+    local CONTROL_TIME=$(date -d "-180 seconds")
+    local BLOCK_TIME=$(date -d "${LATEST_BLOCK_TIME}")
+
+    if [[ "$BLOCK_TIME" < "$CONTROL_TIME" ]];
+    then
+        notify_chain_not_growing $CHAIN_ID
+        exit
+    fi 
 }
 
-catch_error_and_exit () {
-    local ERROR_NO=$?
-    echo "Error: $ERROR_NO"
-    local CHAIN_ID=$1    
- 
-    if (( $ERROR_NO > 0 )); then
-        lock_and_notify $CHAIN_ID
-        exit
-    fi
+notify_chain_node_not_reachable () {
+    local NODE=$1
+
+    local MESSAGE=$(cat <<-EOF
+<b>[Error] Chain node is not reachable</b>
+'Node URL <b>$NODE</b>' is not reachable. Please examine <b>debug.log</b>.
+EOF
+)
+    notify "${MESSAGE}"
+}
+
+notify_chain_not_growing () {
+    local CHAIN_ID=$1
+
+    local MESSAGE=$(cat <<-EOF
+<b>[Error] Chain height is not growing</b>
+'<b>$CHAIN_ID</b>' chain height is not growing, something wrong, please check. Please examine <b>debug.log</b>.
+EOF
+)
+    notify "${MESSAGE}"
+}
+
+notify_chain_syncing () {
+    local CHAIN_ID=$1
+
+    local MESSAGE=$(cat <<-EOF
+<b>[Notice] Chain is still syncing</b>
+'<b>$CHAIN_ID</b>' chain is still catching up. Please examine <b>debug.log</b>.
+EOF
+)
+    notify "${MESSAGE}"
+}
+
+notify_signing_failed () {
+    local CHAIN_ID=$1
+
+    local MESSAGE=$(cat <<-EOF
+<b>[Error] Transaction signing error</b>
+Tokens distribution processing for chain '<b>$CHAIN_ID</b>' was locked due to signing error. Please examine <b>debug.log</b>.
+EOF
+)
+    notify "${MESSAGE}"
+}
+
+notify_broadcast_failed () {
+    local CHAIN_ID=$1
+
+    local MESSAGE=$(cat <<-EOF
+<b>[Warning] Transaction boradcast was failed</b>
+Tokens distribution processing for chain '<b>$CHAIN_ID</b>' was failed. Unable to broadcast transaction to the network. Please examine <b>debug.log</b>.
+EOF
+)
+    notify "${MESSAGE}"
+}
+
+notify_distribution_failed () {
+    local CHAIN_ID=$1
+
+    local MESSAGE=$(cat <<-EOF
+<b>[Error] Distribution processing was locked</b>
+Tokens distribution processing for chain '<b>$CHAIN_ID</b>' was locked due to error. Please examine <b>debug.log</b>.
+EOF
+)
+    notify "${MESSAGE}"
+}
+
+notify_no_commission () {
+    local CHAIN_ID=$1
+    local VALIDATOR_ADDRESS=$2
+
+    local MESSAGE=$(cat <<-EOF
+<b>[Notice] No validator commission</b>
+Tokens distribution processing for chain '<b>$CHAIN_ID</b>' was failed due to empty validator (<b>$VALIDATOR_ADDRESS</b>) commission. Please examine <b>debug.log</b>.
+EOF
+)
+    notify "${MESSAGE}"
 }

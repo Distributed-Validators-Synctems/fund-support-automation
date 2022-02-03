@@ -15,7 +15,7 @@ echo "Starting new commission distribution: "`date`" ========================="
 
 if [ -f "$LOCK_FILE" ]; then
     echo "Distribution locked due to error. Please see debug.log"
-    lock_and_notify $CHAIN_ID
+    notify_distribution_failed $CHAIN_ID
     exit
 fi
 
@@ -51,7 +51,7 @@ VALIDATOR_COMMISSION=$(${PATH_TO_SERVICE} q distribution commission $VALIDATOR_A
 if [ -z "$VALIDATOR_COMMISSION" ]
 then
     echo "No validator commission"
-    lock_and_notify $CHAIN_ID
+    notify_no_commission $CHAIN_ID $VALIDATOR_ADDRESS
     exit
 fi
 
@@ -154,10 +154,17 @@ SIGN_CMD=$FUNC_RETURN
 
 eval $SIGN_CMD
 
-catch_error_and_exit $CHAIN_ID
+if (( $? > 0 )); then
+    touch $LOCK_FILE
+    notify_signing_failed $CHAIN_ID 
+    exit
+fi
 
 $PATH_TO_SERVICE tx broadcast $TRANSACTION_OUTPUT_DIR/signed.json \
     --chain-id $CHAIN_ID \
     --node $NODE
 
-catch_error_and_notify $CHAIN_ID
+if (( $? > 0 )); then
+    notify_broadcast_failed $CHAIN_ID
+    exit
+fi
