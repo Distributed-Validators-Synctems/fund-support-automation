@@ -5,6 +5,8 @@ source ../config.sh
 DELEGATOR_ADDR=$1
 DELEGATOR_DATA_FILE=$2
 
+MAX_BLOCKS_TO_CHECK=90
+
 source ./utils.sh
 
 ADDR_LEN=$(expr length $DELEGATOR_ADDR)
@@ -54,6 +56,10 @@ get_total_cashback $DELEGATOR_DATA_FILE
 
 get_height_reward $LAST_HEIGHT
 PREV_REWARD=$HEIGHT_REWARD
+
+if (( $(echo "($CURRENT_HEIGHT - $LAST_HEIGHT) > $MAX_BLOCKS_TO_CHECK" | bc ) == 1 )); then
+    LAST_HEIGHT=$(echo "$CURRENT_HEIGHT - $MAX_BLOCKS_TO_CHECK" | bc )
+fi
 
 for HEIGHT in $( eval echo {$LAST_HEIGHT..$CURRENT_HEIGHT} )
 do
