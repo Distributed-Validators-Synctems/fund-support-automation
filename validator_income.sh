@@ -12,6 +12,8 @@ NODE=${5:-"http://localhost:26657"}
 
 VALIDATOR_DATA_FILE="$DATA_DIR/validator_$VALIDATOR_ADDRESS.json"
 
+network_up_and_synced $NODE
+
 CURRENT_HEIGHT=$(curl $NODE/status -s | jq ".result.sync_info.latest_block_height | tonumber")
 
 get_height_commission () {
