@@ -10,6 +10,8 @@ COIN=$3
 DENOM=$4
 NODE=${5:-"http://localhost:26657"}
 
+MAX_BLOCKS_TO_CHECK=90
+
 VALIDATOR_DATA_FILE="$DATA_DIR/validator_$VALIDATOR_ADDRESS.json"
 
 network_up_and_synced $NODE
@@ -41,6 +43,10 @@ get_last_height $VALIDATOR_DATA_FILE
 get_height_commission $LAST_HEIGHT
 PREV_COMMISSION=$HEIGHT_COMMISSION
 TOTAL_VALIDATOR_COMMISSION=0
+
+if (( $(echo "($CURRENT_HEIGHT - $LAST_HEIGHT) > $MAX_BLOCKS_TO_CHECK" | bc ) == 1 )); then
+    LAST_HEIGHT=$(echo "$CURRENT_HEIGHT - $MAX_BLOCKS_TO_CHECK" | bc )
+fi
 
 for HEIGHT in $( eval echo {$LAST_HEIGHT..$CURRENT_HEIGHT} )
 do
