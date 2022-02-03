@@ -12,6 +12,8 @@ if [ $ADDR_LEN -lt 1 ]; then
     exit
 fi
 
+network_up_and_synced $NODE
+
 CURRENT_HEIGHT=$(curl $NODE/status -s | jq ".result.sync_info.latest_block_height | tonumber")
 
 get_height_reward () {
