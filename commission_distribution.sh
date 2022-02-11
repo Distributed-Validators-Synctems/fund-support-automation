@@ -135,11 +135,21 @@ if (( $? > 0 )); then
     exit
 fi
 
-$PATH_TO_SERVICE tx broadcast $TRANSACTION_OUTPUT_DIR/signed.json \
+TX_RESULT=$($PATH_TO_SERVICE tx broadcast $TRANSACTION_OUTPUT_DIR/signed.json \
     --chain-id $CHAIN_ID \
-    --node $NODE
+    --node $NODE)
 
 if (( $? > 0 )); then
     notify_broadcast_failed $CHAIN_ID
     exit
 fi
+
+TX_CODE=$(echo "${TX_RESULT}" | jq -r '.code')
+
+if [ "$TX_CODE" -gt "0" ]; then
+    RAW_LOG=$(echo "${TX_RESULT}" | jq -r '.raw_log')
+    notify_broadcast_log $CHAIN_ID "$RAW_LOG"
+    exit
+fi 
+
+

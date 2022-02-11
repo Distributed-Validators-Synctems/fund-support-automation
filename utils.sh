@@ -136,7 +136,11 @@ notify_chain_node_not_reachable () {
 
     local MESSAGE=$(cat <<-EOF
 <b>[Error] Chain node is not reachable</b>
-'Node URL <b>$NODE</b>' is not reachable. Please examine <b>debug.log</b>.
+'Node URL <b>$NODE</b>' is not reachable. 
+
+Hostname: <b>$(hostname)</b>
+
+Please examine <b>debug.log</b>.
 EOF
 )
     notify "${MESSAGE}"
@@ -147,7 +151,12 @@ notify_chain_not_growing () {
 
     local MESSAGE=$(cat <<-EOF
 <b>[Error] Chain height is not growing</b>
-'<b>$CHAIN_ID</b>' chain height is not growing, something wrong, please check. Please examine <b>debug.log</b>.
+Chain height is not growing, something wrong, please check. 
+
+Hostname: <b>$(hostname)</b>
+Chain ID: <b>${CHAIN_ID}</b>
+
+Please examine <b>debug.log</b>.
 EOF
 )
     notify "${MESSAGE}"
@@ -158,7 +167,12 @@ notify_chain_syncing () {
 
     local MESSAGE=$(cat <<-EOF
 <b>[Notice] Chain is still syncing</b>
-'<b>$CHAIN_ID</b>' chain is still catching up. Please examine <b>debug.log</b>.
+Chain is still catching up. 
+
+Hostname: <b>$(hostname)</b>
+Chain ID: <b>${CHAIN_ID}</b>
+
+Please examine <b>debug.log</b>.
 EOF
 )
     notify "${MESSAGE}"
@@ -169,7 +183,12 @@ notify_signing_failed () {
 
     local MESSAGE=$(cat <<-EOF
 <b>[Error] Transaction signing error</b>
-Tokens distribution processing for chain '<b>$CHAIN_ID</b>' was locked due to signing error. Please examine <b>debug.log</b>.
+Tokens distribution processing was locked due to signing error. 
+
+Hostname: <b>$(hostname)</b>
+Chain ID: <b>${CHAIN_ID}</b>
+
+Please examine <b>debug.log</b>.
 EOF
 )
     notify "${MESSAGE}"
@@ -180,7 +199,30 @@ notify_broadcast_failed () {
 
     local MESSAGE=$(cat <<-EOF
 <b>[Warning] Transaction boradcast was failed</b>
-Tokens distribution processing for chain '<b>$CHAIN_ID</b>' was failed. Unable to broadcast transaction to the network. Please examine <b>debug.log</b>.
+Tokens distribution processing was failed. Unable to broadcast transaction to the network. 
+
+Hostname: <b>$(hostname)</b>
+Chain ID: <b>${CHAIN_ID}</b>
+
+Please examine <b>debug.log</b>.
+EOF
+)
+    notify "${MESSAGE}"
+}
+
+notify_broadcast_log () {
+    local CHAIN_ID=$1
+    local LOG="$2"
+
+    local MESSAGE=$(cat <<-EOF
+<b>[Error] Distribution processing was failed</b>
+Tokens distribution processing was failed due to transaction error. 
+
+Hostname: <b>$(hostname)</b>
+Chain ID: <b>${CHAIN_ID}</b>
+Log message: '${LOG}'.
+
+Please examine <b>debug.log</b>.
 EOF
 )
     notify "${MESSAGE}"
@@ -191,7 +233,12 @@ notify_distribution_failed () {
 
     local MESSAGE=$(cat <<-EOF
 <b>[Error] Distribution processing was locked</b>
-Tokens distribution processing for chain '<b>$CHAIN_ID</b>' was locked due to error. Please examine <b>debug.log</b>.
+Tokens distribution processing was locked due to error. 
+
+Hostname: <b>$(hostname)</b>
+Chain ID: <b>${CHAIN_ID}</b>
+
+Please examine <b>debug.log</b>.
 EOF
 )
     notify "${MESSAGE}"
