@@ -68,6 +68,13 @@ dvs_supported_chains () {
             CHAIN_DENOM="umed"
             return
             ;;
+        umeed)
+            DVS_FOUNDATION_ADDRESS="umee1nu6ds4gpfn82nazctulvs09zep6d5ctq6stl3e"
+            RECOMMENDED_FEE="0"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="5000000"
+            CHAIN_DENOM="uumee"
+            return
+            ;;
     esac
 
     echo -e "${RED}ERROR!${NC} This chain is not supported ($NODE_SERVICE)."
