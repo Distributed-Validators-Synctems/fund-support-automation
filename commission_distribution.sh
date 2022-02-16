@@ -136,6 +136,7 @@ if (( $? > 0 )); then
 fi
 
 TX_RESULT=$($PATH_TO_SERVICE tx broadcast $TRANSACTION_OUTPUT_DIR/signed.json \
+    --output json \
     --chain-id $CHAIN_ID \
     --node $NODE)
 
