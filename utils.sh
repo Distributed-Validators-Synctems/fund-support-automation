@@ -126,7 +126,7 @@ network_up_and_synced () {
 
     if [[ "$BLOCK_TIME" < "$CONTROL_TIME" ]];
     then
-        notify_chain_not_growing $CHAIN_ID
+        notify_chain_not_growing $CHAIN_ID "$BLOCK_TIME" "$CONTROL_TIME"
         exit
     fi 
 }
@@ -148,6 +148,8 @@ EOF
 
 notify_chain_not_growing () {
     local CHAIN_ID=$1
+    local BLOCK_TIME="${2}"
+    local CONTROL_TIME="${3}"
 
     local MESSAGE=$(cat <<-EOF
 <b>[Error] Chain height is not growing</b>
@@ -155,6 +157,8 @@ Chain height is not growing, something wrong, please check.
 
 Hostname: <b>$(hostname)</b>
 Chain ID: <b>${CHAIN_ID}</b>
+Chain time: <b>${BLOCK_TIME}</b>
+Control time: <b>${CONTROL_TIME}</b>
 
 Please examine <b>debug.log</b>.
 EOF
