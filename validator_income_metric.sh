@@ -2,9 +2,11 @@
 
 cd $(dirname "$0")
 
-source ../config.sh
+CONFIG_DIR=$1
+COIN=$2
 
-COIN=$1
+source $CONFIG_DIR/config.sh
+
 
 source ./validator_income.sh $PATH_TO_SERVICE $VALIDATOR_ADDRESS $COIN $DENOM $NODE
 
