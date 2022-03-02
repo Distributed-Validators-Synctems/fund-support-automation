@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source ../config.sh
+CONFIG_DIR=$1
+
+source $CONFIG_DIR/config.sh
 
 source ./utils.sh
 

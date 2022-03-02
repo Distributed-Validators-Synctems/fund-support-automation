@@ -1,9 +1,10 @@
 #!/bin/bash
 
-source ../config.sh
+CONFIG_DIR=$1
+DELEGATOR_ADDR=$2
+DELEGATOR_DATA_FILE=$3
 
-DELEGATOR_ADDR=$1
-DELEGATOR_DATA_FILE=$2
+source $CONFIG_DIR/config.sh
 
 MAX_BLOCKS_TO_CHECK=90
 

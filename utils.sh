@@ -1,13 +1,13 @@
 #!/bin/bash
 
-if [ -f "../notification.sh" ]; then
-    source '../notification.sh'
+if [ -f "${CONFIG_DIR}/notification.sh" ]; then
+    source ${CONFIG_DIR}/notification.sh
 fi
 
-DATA_DIR="../data/"
-LOCK_FILE="./lock"
-WITHDRAW_ADDRESSES_FILE="../withdraw_addresses"
-ADDRESSES_FILE="../addresses"
+DATA_DIR="${CONFIG_DIR}/data/"
+LOCK_FILE="${CONFIG_DIR}/lock"
+WITHDRAW_ADDRESSES_FILE="${CONFIG_DIR}/withdraw_addresses"
+ADDRESSES_FILE="${CONFIG_DIR}/addresses"
 NUMBER_RE='^[0-9]*([.][0-9]+)?$'
 
 expect () {
@@ -121,12 +121,12 @@ network_up_and_synced () {
 
     local LATEST_BLOCK_TIME=$(echo $CHAIN_STATUS | jq -r '.result.sync_info.latest_block_time')
 
-    local CONTROL_TIME=$(date -d "-180 seconds")
-    local BLOCK_TIME=$(date -d "${LATEST_BLOCK_TIME}")
+    local CONTROL_TIMESTAMP=$(date -d "-180 seconds" +%s)
+    local BLOCK_TIMESTAMP=$(date -d "${LATEST_BLOCK_TIME}" +%s)
 
-    if [[ "$BLOCK_TIME" < "$CONTROL_TIME" ]];
+    if [$BLOCK_TIMESTAMP -lt $CONTROL_TIMESTAMP]
     then
-        notify_chain_not_growing $CHAIN_ID "$BLOCK_TIME" "$CONTROL_TIME"
+        notify_chain_not_growing $CHAIN_ID "$BLOCK_TIMESTAMP" "$CONTROL_TIMESTAMP"
         exit
     fi 
 }

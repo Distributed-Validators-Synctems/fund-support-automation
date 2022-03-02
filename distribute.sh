@@ -2,4 +2,6 @@
 
 cd $(dirname "$0")
 
-source ./commission_distribution.sh
+CONFIG_DIR=$1
+
+source ./commission_distribution.sh $CONFIG_DIR
