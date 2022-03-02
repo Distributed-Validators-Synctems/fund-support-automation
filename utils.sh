@@ -124,7 +124,7 @@ network_up_and_synced () {
     local CONTROL_TIMESTAMP=$(date -d "-180 seconds" +%s)
     local BLOCK_TIMESTAMP=$(date -d "${LATEST_BLOCK_TIME}" +%s)
 
-    if [$BLOCK_TIMESTAMP -lt $CONTROL_TIMESTAMP]
+    if [ "$BLOCK_TIMESTAMP" -lt "$CONTROL_TIMESTAMP" ];
     then
         notify_chain_not_growing $CHAIN_ID "$BLOCK_TIMESTAMP" "$CONTROL_TIMESTAMP"
         exit
