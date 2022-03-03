@@ -6,7 +6,7 @@ source $CONFIG_DIR/config.sh
 
 source ./utils.sh
 
-TRANSACTION_OUTPUT_DIR=${1:-"."}
+TRANSACTION_OUTPUT_DIR=${1:-"${CONFIG_DIR}"}
 
 ADDRESSES_COUNT=$(wc -l $ADDRESSES_FILE | cut -f1 -d" ")
 MIN_VALIDATOR_COMMISSION=$(echo "($ADDRESSES_COUNT + 5) * $MIN_COMMISSION_TO_WITHDRAW" | bc ) #"
@@ -96,7 +96,7 @@ do
     generate_send_tx $WITHDRAW_ADDRESS $COMMISSION_SHARE
 done
 
-echo $CSV_LINE >> payments.csv
+echo $CSV_LINE >> ${CONFIG_DIR}/payments.csv
 
 if [ "$TOKENS_REDELEGATION" = "true" ]; then
     OWNER_BALANCE=$(${PATH_TO_SERVICE} q bank balances $OWNER_ADDRESS --node $NODE -o json | \
@@ -115,9 +115,9 @@ fi
 
 echo "Broadcasting withdrawal transaction..."
 sed "s/<!#VALIDATOR_ADDRESS>/${VALIDATOR_ADDRESS}/g" ./templates/distribution-json.tmpl > ${TRANSACTION_OUTPUT_DIR}/distribution.json
-sed -i "s/<!#TXS_BATCH>/${TXS_BATCH}/g" distribution.json
-sed -i "s/<!#DENOM>/${DENOM}/g" distribution.json
-sed -i "s/<!#FEE>/${FEE}/g" distribution.json
+sed -i "s/<!#TXS_BATCH>/${TXS_BATCH}/g" ${TRANSACTION_OUTPUT_DIR}/distribution.json
+sed -i "s/<!#DENOM>/${DENOM}/g" ${TRANSACTION_OUTPUT_DIR}/distribution.json
+sed -i "s/<!#FEE>/${FEE}/g" ${TRANSACTION_OUTPUT_DIR}/distribution.json
 
 CMD="tx sign $TRANSACTION_OUTPUT_DIR/distribution.json 
     --from $OWNER_ADDRESS 
