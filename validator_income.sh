@@ -2,14 +2,14 @@
 
 cd $(dirname "$0")
 
-source ./utils.sh
-
 CONFIG_DIR=$1
 PATH_TO_SERVICE=$2
 VALIDATOR_ADDRESS=$3
 COIN=$4
 DENOM=$5
 NODE=${6:-"http://localhost:26657"}
+
+source ./utils.sh
 
 MAX_BLOCKS_TO_CHECK=90
 
