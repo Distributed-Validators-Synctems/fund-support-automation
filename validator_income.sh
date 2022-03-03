@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cd $(dirname "$0")
-
 CONFIG_DIR=$1
 PATH_TO_SERVICE=$2
 VALIDATOR_ADDRESS=$3
