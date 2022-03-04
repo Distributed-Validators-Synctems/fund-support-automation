@@ -42,6 +42,32 @@ fi
 COMMISSION_WITHDRAW=0
 TXS_BATCH=""
 CSV_LINE="\""`date`"\";\"$MIN_COMMISSION_TO_WITHDRAW\";\"$VALIDATOR_COMMISSION\""
+
+WITHDRAW_ADRRESSES=$(cat $WITHDRAW_ADDRESSES_FILE)
+
+PRIMARY_ADDRESSES=$(echo "${WITHDRAW_ADRRESSES}" | jq -r '.[] | select(.primary)' | jq -s)
+WITHDRAW_ADDRESSES_AMOUNT=$(echo "${PRIMARY_ADDRESSES}" | jq 'length - 1')
+for ADDRESS_IDX in $( eval echo {0..$WITHDRAW_ADDRESSES_AMOUNT} )
+do
+    ADDRESS_DATA=$(echo "${PRIMARY_ADDRESSES}" | jq ".[$ADDRESS_IDX]")
+
+    get_withdraw_address "$ADDRESS_DATA"
+    WITHDRAW_ADDRESS=$FUNC_RETURN
+
+    get_withdraw_share "$ADDRESS_DATA"
+    SHARE=$FUNC_RETURN
+
+    COMMISSION_SHARE=$(echo "$VALIDATOR_COMMISSION * $SHARE" | bc -l | cut -f1 -d".") #"
+
+    CSV_LINE="$CSV_LINE;\"$WITHDRAW_ADDRESS\";\"$COMMISSION_SHARE\""
+
+    echo "PRMARY SHARE WITHDRAWAL: $WITHDRAW_ADDRESS | $SHARE | $COMMISSION_SHARE"
+
+    COMMISSION_WITHDRAW=$(echo "$COMMISSION_SHARE + $COMMISSION_WITHDRAW" | bc)
+    
+    generate_send_tx $WITHDRAW_ADDRESS $COMMISSION_SHARE
+done
+
 # Return accumulated commission to selected delegators
 while read -r address; do
     echo "Processing address $address..."
@@ -72,12 +98,14 @@ CSV_LINE="$CSV_LINE;\"$COMMISSION_REMAINDER\""
 echo "COMMISSION_WITHDRAW: $COMMISSION_WITHDRAW"
 echo "COMMISSION_REMAINDER: $COMMISSION_REMAINDER"
 
-WITHDRAW_ADDRESSES_AMOUNT=$(cat $WITHDRAW_ADDRESSES_FILE | jq 'length - 1')
+
+SECONDARY_ADDRESSES=$(echo "${WITHDRAW_ADRRESSES}" | jq -r '.[] | select((.primary // false) == false)' | jq -s)
+WITHDRAW_ADDRESSES_AMOUNT=$(echo "${SECONDARY_ADDRESSES}" | jq 'length - 1')
 COMMISSION_LEFT=$COMMISSION_REMAINDER
 
 for ADDRESS_IDX in $( eval echo {0..$WITHDRAW_ADDRESSES_AMOUNT} )
 do
-    ADDRESS_DATA=$(cat $WITHDRAW_ADDRESSES_FILE | jq ".[$ADDRESS_IDX]")
+    ADDRESS_DATA=$(echo "${SECONDARY_ADDRESSES}" | jq ".[$ADDRESS_IDX]")
 
     get_withdraw_address "$ADDRESS_DATA"
     WITHDRAW_ADDRESS=$FUNC_RETURN
