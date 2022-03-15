@@ -412,7 +412,7 @@ __CONFIG_EOF
 }
 
 fetch_git_repo () {
-    local DIR="./fund-support-automation"
+    local DIR="./script"
     if [[ -d $DIR ]]
     then
         cd $DIR
@@ -421,7 +421,7 @@ fetch_git_repo () {
         git merge origin/main
         cd ..
     else
-        git clone https://github.com/Distributed-Validators-Synctems/fund-support-automation.git
+        git clone https://github.com/Distributed-Validators-Synctems/fund-support-automation.git script
     fi    
 }
 
@@ -439,14 +439,14 @@ add_cronjob_tasks () {
     if [ -z "$CRON_RECORD" ]
     then
         echo "# DVS Fund Support: Commission Cashback Script" >> $TMPFILE
-        echo "*/5 * * * * /bin/bash $PWD/fund-support-automation/read_addresses.sh $PWD >>$PWD/commission_cashback.log 2>&1" >> $TMPFILE
+        echo "*/5 * * * * /bin/bash $PWD/script/read_addresses.sh $PWD >>$PWD/commission_cashback.log 2>&1" >> $TMPFILE
     fi
 
     CRON_RECORD=$(cat $TMPFILE | grep "# Commission Distribution Script")
     if [ -z "$CRON_RECORD" ]
     then
         echo "# DVS Fund Support: Commission Distribution Script" >> $TMPFILE
-        echo "$RAND * * * * /bin/bash $PWD/fund-support-automation/distribute.sh $PWD >>$PWD/distribute.log 2>&1" >> $TMPFILE
+        echo "$RAND * * * * /bin/bash $PWD/script/distribute.sh $PWD >>$PWD/distribute.log 2>&1" >> $TMPFILE
     fi
 
     echo "Following crontab job configuration will be added"

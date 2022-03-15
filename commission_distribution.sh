@@ -13,14 +13,14 @@ MIN_VALIDATOR_COMMISSION=$(echo "($ADDRESSES_COUNT + 5) * $MIN_COMMISSION_TO_WIT
 
 echo "Starting new commission distribution: "`date`" ========================="
 
+network_up_and_synced $NODE
+get_chain_id $NODE
+
 if [ -f "$LOCK_FILE" ]; then
     echo "Distribution locked due to error. Please see debug.log"
     notify_distribution_failed $CHAIN_ID
     exit
 fi
-
-network_up_and_synced $NODE
-get_chain_id $NODE
 
 VALIDATOR_COMMISSION=$(${PATH_TO_SERVICE} q distribution commission $VALIDATOR_ADDRESS --node $NODE -o json | \
     /usr/bin/jq ".commission[] | select(.denom | contains(\"$DENOM\")).amount | tonumber")
