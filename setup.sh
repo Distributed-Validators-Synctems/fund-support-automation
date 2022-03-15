@@ -410,7 +410,7 @@ __CONFIG_EOF
 create_configs () {
     cat <<__CONFIG_EOF > withdraw_addresses
 [
-    { "address": "$DVS_FOUNDATION_ADDRESS", "share": $FUND_PERCENT }
+    { "address": "$DVS_FOUNDATION_ADDRESS", "share": $FUND_PERCENT, "primary": true }
 ]
 __CONFIG_EOF
     cat <<__CONFIG_EOF > addresses
