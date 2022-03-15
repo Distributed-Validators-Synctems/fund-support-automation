@@ -47,26 +47,28 @@ WITHDRAW_ADRRESSES=$(cat $WITHDRAW_ADDRESSES_FILE)
 
 PRIMARY_ADDRESSES=$(echo "${WITHDRAW_ADRRESSES}" | jq -r '.[] | select(.primary)' | jq -s)
 WITHDRAW_ADDRESSES_AMOUNT=$(echo "${PRIMARY_ADDRESSES}" | jq 'length - 1')
-for ADDRESS_IDX in $( eval echo {0..$WITHDRAW_ADDRESSES_AMOUNT} )
-do
-    ADDRESS_DATA=$(echo "${PRIMARY_ADDRESSES}" | jq ".[$ADDRESS_IDX]")
+if [ "$WITHDRAW_ADDRESSES_AMOUNT" -ge "0" ]; then
+    for ADDRESS_IDX in $( eval echo {0..$WITHDRAW_ADDRESSES_AMOUNT} )
+    do
+        ADDRESS_DATA=$(echo "${PRIMARY_ADDRESSES}" | jq ".[$ADDRESS_IDX]")
 
-    get_withdraw_address "$ADDRESS_DATA"
-    WITHDRAW_ADDRESS=$FUNC_RETURN
+        get_withdraw_address "$ADDRESS_DATA"
+        WITHDRAW_ADDRESS=$FUNC_RETURN
 
-    get_withdraw_share "$ADDRESS_DATA"
-    SHARE=$FUNC_RETURN
+        get_withdraw_share "$ADDRESS_DATA"
+        SHARE=$FUNC_RETURN
 
-    COMMISSION_SHARE=$(echo "$VALIDATOR_COMMISSION * $SHARE" | bc -l | cut -f1 -d".") #"
+        COMMISSION_SHARE=$(echo "$VALIDATOR_COMMISSION * $SHARE" | bc -l | cut -f1 -d".") #"
 
-    CSV_LINE="$CSV_LINE;\"$WITHDRAW_ADDRESS\";\"$COMMISSION_SHARE\""
+        CSV_LINE="$CSV_LINE;\"$WITHDRAW_ADDRESS\";\"$COMMISSION_SHARE\""
 
-    echo "PRMARY SHARE WITHDRAWAL: $WITHDRAW_ADDRESS | $SHARE | $COMMISSION_SHARE"
+        echo "PRMARY SHARE WITHDRAWAL: $WITHDRAW_ADDRESS | $SHARE | $COMMISSION_SHARE"
 
-    COMMISSION_WITHDRAW=$(echo "$COMMISSION_SHARE + $COMMISSION_WITHDRAW" | bc)
-    
-    generate_send_tx $WITHDRAW_ADDRESS $COMMISSION_SHARE
-done
+        COMMISSION_WITHDRAW=$(echo "$COMMISSION_SHARE + $COMMISSION_WITHDRAW" | bc)
+        
+        generate_send_tx $WITHDRAW_ADDRESS $COMMISSION_SHARE
+    done
+fi
 
 # Return accumulated commission to selected delegators
 while read -r address; do
@@ -103,26 +105,28 @@ SECONDARY_ADDRESSES=$(echo "${WITHDRAW_ADRRESSES}" | jq -r '.[] | select((.prima
 WITHDRAW_ADDRESSES_AMOUNT=$(echo "${SECONDARY_ADDRESSES}" | jq 'length - 1')
 COMMISSION_LEFT=$COMMISSION_REMAINDER
 
-for ADDRESS_IDX in $( eval echo {0..$WITHDRAW_ADDRESSES_AMOUNT} )
-do
-    ADDRESS_DATA=$(echo "${SECONDARY_ADDRESSES}" | jq ".[$ADDRESS_IDX]")
+if [ "$WITHDRAW_ADDRESSES_AMOUNT" -ge "0" ]; then
+    for ADDRESS_IDX in $( eval echo {0..$WITHDRAW_ADDRESSES_AMOUNT} )
+    do
+        ADDRESS_DATA=$(echo "${SECONDARY_ADDRESSES}" | jq ".[$ADDRESS_IDX]")
 
-    get_withdraw_address "$ADDRESS_DATA"
-    WITHDRAW_ADDRESS=$FUNC_RETURN
+        get_withdraw_address "$ADDRESS_DATA"
+        WITHDRAW_ADDRESS=$FUNC_RETURN
 
-    get_withdraw_share "$ADDRESS_DATA"
-    SHARE=$FUNC_RETURN
+        get_withdraw_share "$ADDRESS_DATA"
+        SHARE=$FUNC_RETURN
 
-    COMMISSION_SHARE=$(echo "$COMMISSION_REMAINDER * $SHARE" | bc -l | cut -f1 -d".") #"
+        COMMISSION_SHARE=$(echo "$COMMISSION_REMAINDER * $SHARE" | bc -l | cut -f1 -d".") #"
 
-    CSV_LINE="$CSV_LINE;\"$WITHDRAW_ADDRESS\";\"$COMMISSION_SHARE\""
+        CSV_LINE="$CSV_LINE;\"$WITHDRAW_ADDRESS\";\"$COMMISSION_SHARE\""
 
-    echo "SHARE WITHDRAWAL: $WITHDRAW_ADDRESS | $SHARE | $COMMISSION_SHARE"
+        echo "SHARE WITHDRAWAL: $WITHDRAW_ADDRESS | $SHARE | $COMMISSION_SHARE"
 
-    COMMISSION_LEFT=$(echo "$COMMISSION_LEFT - $COMMISSION_SHARE" | bc -l) #"
-    
-    generate_send_tx $WITHDRAW_ADDRESS $COMMISSION_SHARE
-done
+        COMMISSION_LEFT=$(echo "$COMMISSION_LEFT - $COMMISSION_SHARE" | bc -l) #"
+        
+        generate_send_tx $WITHDRAW_ADDRESS $COMMISSION_SHARE
+    done
+fi
 
 echo $CSV_LINE >> ${CONFIG_DIR}/payments.csv
 
