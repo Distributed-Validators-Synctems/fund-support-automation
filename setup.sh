@@ -76,10 +76,17 @@ dvs_supported_chains () {
             return
             ;;
         comdex)
-            DVS_FOUNDATION_ADDRESS="comdex1ewn73qp0aqrtya38p0nv5c2xsshdea7az9yjea"
-            RECOMMENDED_FEE="0"
+            DVS_FOUNDATION_ADDRESS="comdex1hd56httkxq0h73spttr8ghuj3gm2zj99skn3k2"
+            RECOMMENDED_FEE="8750"
             RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="1000000"
             CHAIN_DENOM="ucmdx"
+            return
+            ;;
+        starsd)
+            DVS_FOUNDATION_ADDRESS="stars1tgzftjnmm9u0hhmfxame06pvy3f69fsz83uq8d"
+            RECOMMENDED_FEE="7500"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="1000000"
+            CHAIN_DENOM="ustars"
             return
             ;;
     esac
