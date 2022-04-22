@@ -193,9 +193,6 @@ get_rpc_node () {
     done    
 }
 
-/opt/iovns-ibc/bin/starnamed
-http://localhost:16657
-
 get_fund_payment_percent () {
     echo ""
     echo "Foundation recurrent payments percent. Recommended value 0.1-0.15. Minimum 0.1, maximum 0.2"
