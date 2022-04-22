@@ -98,7 +98,7 @@ dvs_supported_chains () {
         starnamed)
             DVS_FOUNDATION_ADDRESS="star1c5fh2hgfpwt2z3sya7flgz74w0lcqfdm69ed2e"
             RECOMMENDED_FEE="250000"
-            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="1000000"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="5000000"
             CHAIN_DENOM="uiov"
             return
             ;;
@@ -192,6 +192,9 @@ get_rpc_node () {
         echo -e "${RED}ERROR!${NC} RPC node is not accessible. Try another URL."
     done    
 }
+
+/opt/iovns-ibc/bin/starnamed
+http://localhost:16657
 
 get_fund_payment_percent () {
     echo ""
