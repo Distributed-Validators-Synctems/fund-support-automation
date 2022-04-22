@@ -42,7 +42,6 @@ DEFAULT_KEYRING_BACKEND="os"
 DEFAULT_NODE="http://localhost:26657"
 INSTALLATION_DIR="dvs-fund-support"
 
-
 dvs_supported_chains () {
     local NODE_SERVICE=$(basename $1)
 
@@ -87,6 +86,20 @@ dvs_supported_chains () {
             RECOMMENDED_FEE="7500"
             RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="1000000"
             CHAIN_DENOM="ustars"
+            return
+            ;;
+        starsd)
+            DVS_FOUNDATION_ADDRESS="stars1tgzftjnmm9u0hhmfxame06pvy3f69fsz83uq8d"
+            RECOMMENDED_FEE="7500"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="1000000"
+            CHAIN_DENOM="ustars"
+            return
+            ;;
+        starnamed)
+            DVS_FOUNDATION_ADDRESS="star1c5fh2hgfpwt2z3sya7flgz74w0lcqfdm69ed2e"
+            RECOMMENDED_FEE="250000"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="1000000"
+            CHAIN_DENOM="uiov"
             return
             ;;
     esac
