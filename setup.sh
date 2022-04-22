@@ -335,7 +335,7 @@ find_node_executable () {
             NODE_SERVICE_NAME=$(which $NODE_SERVICE_NAME)
         fi 
 
-        local SDK_VERSION=$($NODE_SERVICE_NAME version --long 2>&1 | grep cosmos_sdk_version )      
+        local SDK_VERSION=$($NODE_SERVICE_NAME version --long 2>&1 | grep build_tags )      
 
         if ! [ -z "$SDK_VERSION" ]; then
             PATH_TO_SERVICE=$NODE_SERVICE_NAME
