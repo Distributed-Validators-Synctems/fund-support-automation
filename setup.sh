@@ -195,10 +195,9 @@ get_rpc_node () {
 
 get_fund_payment_percent () {
     echo ""
-    echo "Foundation recurrent payments percent. Recommended value 0.05-0.1. Max 0.2"
+    echo "Foundation recurrent payments percent. Recommended value 0.1-0.15. Minimum 0.1, maximum 0.2"
     
-   
-
+ 
     while :
     do
         read -p "Foundation percent: " FUND_PERCENT
@@ -207,7 +206,7 @@ get_fund_payment_percent () {
 
         FUND_PERCENT=$(echo $FUND_PERCENT | tr "," ".")
 
-        if [[ $FUND_PERCENT =~ $FLOAT_RE ]] && [ $(echo "$FUND_PERCENT <= 0.2" | bc ) -eq 1 ] ; then
+        if [[ $FUND_PERCENT =~ $FLOAT_RE ]] && [ $(echo "$FUND_PERCENT <= 0.2" | bc ) -eq 1 ] && [ $(echo "$FUND_PERCENT >= 0.1" | bc ) -eq 1 ]; then
             break
         fi
 
