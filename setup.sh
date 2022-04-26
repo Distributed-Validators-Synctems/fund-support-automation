@@ -119,7 +119,7 @@ collect_settings () {
 
     echo ""
     echo "Network denomination. Please use denomination used for staking and fee payments"
-    read -p "Denomination ($CHAIN_DENOM): " DENOM
+    read -p "Denomination [$CHAIN_DENOM]: " DENOM
     if [ -z "$DENOM" ]; then
         DENOM=$CHAIN_DENOM
     fi
