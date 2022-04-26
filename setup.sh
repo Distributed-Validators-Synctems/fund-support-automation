@@ -88,13 +88,6 @@ dvs_supported_chains () {
             CHAIN_DENOM="ustars"
             return
             ;;
-        starsd)
-            DVS_FOUNDATION_ADDRESS="stars1tgzftjnmm9u0hhmfxame06pvy3f69fsz83uq8d"
-            RECOMMENDED_FEE="7500"
-            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="1000000"
-            CHAIN_DENOM="ustars"
-            return
-            ;;
         starnamed)
             DVS_FOUNDATION_ADDRESS="star1c5fh2hgfpwt2z3sya7flgz74w0lcqfdm69ed2e"
             RECOMMENDED_FEE="250000"
@@ -119,7 +112,7 @@ collect_settings () {
 
     echo ""
     echo "Network denomination. Please use denomination used for staking and fee payments"
-    read -p "Denomination ($CHAIN_DENOM): " DENOM
+    read -p "Denomination [$CHAIN_DENOM]: " DENOM
     if [ -z "$DENOM" ]; then
         DENOM=$CHAIN_DENOM
     fi
