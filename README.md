@@ -19,6 +19,17 @@ This tools is intendent to be used to automate support of the DVS Foundation fro
 * Ubuntu
 * Debian
 
+### Supported networks
+* SifChain
+* Medibloc
+* Umee
+* Comdex
+* Stargaze
+* Starname
+* Rizon
+
+If you cannot find your chain in the list simply create a PR with it, or ask me directly (Telegram: https://t.me/Albert_OpenTech).
+
 ## Known issues
 
 I found it difficult to use this tool in conjunction with node inside docker container. 

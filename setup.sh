@@ -54,7 +54,7 @@ dvs_supported_chains () {
             return
             ;;
         sifnoded)
-            DVS_FOUNDATION_ADDRESS="dvs_address"
+            DVS_FOUNDATION_ADDRESS="sif1d6l6msam5svk2vghunjl96ejx6psa0mtav2dwk"
             RECOMMENDED_FEE="130000000000000000"
             RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="1500000000000000000"
             CHAIN_DENOM="rowan"
@@ -75,7 +75,7 @@ dvs_supported_chains () {
             return
             ;;
         comdex)
-            DVS_FOUNDATION_ADDRESS="comdex1hd56httkxq0h73spttr8ghuj3gm2zj99skn3k2"
+            DVS_FOUNDATION_ADDRESS="comdex1uhrh5egfe4rt6w9qzkaka7rn56akkyeeh35dpe"
             RECOMMENDED_FEE="8750"
             RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="1000000"
             CHAIN_DENOM="ucmdx"
@@ -93,6 +93,13 @@ dvs_supported_chains () {
             RECOMMENDED_FEE="250000"
             RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="5000000"
             CHAIN_DENOM="uiov"
+            return
+            ;;
+        rizond)
+            DVS_FOUNDATION_ADDRESS="rizon1yf7k60shq3d66ryhgxdep536lfdvx3mm77jxmy"
+            RECOMMENDED_FEE="6500"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="2000000"
+            CHAIN_DENOM="uatolo"
             return
             ;;
     esac
