@@ -150,6 +150,7 @@ sed "s/<!#VALIDATOR_ADDRESS>/${VALIDATOR_ADDRESS}/g" ./templates/distribution-js
 sed -i "s/<!#TXS_BATCH>/${TXS_BATCH}/g" ${TRANSACTION_OUTPUT_DIR}/distribution.json
 sed -i "s/<!#DENOM>/${DENOM}/g" ${TRANSACTION_OUTPUT_DIR}/distribution.json
 sed -i "s/<!#FEE>/${FEE}/g" ${TRANSACTION_OUTPUT_DIR}/distribution.json
+sed -i "s/<!#GAS_LIMIT>/${GAS_LIMIT}/g" ${TRANSACTION_OUTPUT_DIR}/distribution.json
 
 CMD="tx sign $TRANSACTION_OUTPUT_DIR/distribution.json 
     --from $OWNER_ADDRESS 
