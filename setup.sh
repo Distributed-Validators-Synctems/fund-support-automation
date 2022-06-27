@@ -102,6 +102,13 @@ dvs_supported_chains () {
             CHAIN_DENOM="uatolo"
             return
             ;;
+        mantleNode)
+            DVS_FOUNDATION_ADDRESS="mantle1v2qu3lhecer8q22w2aavhgpss2aqgt45ph2zjd"
+            RECOMMENDED_FEE="4000"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="1000000"
+            CHAIN_DENOM="umntl"
+            return
+            ;;
     esac
 
     echo -e "${RED}ERROR!${NC} This chain is not supported ($NODE_SERVICE)."
