@@ -260,6 +260,25 @@ EOF
     notify "${MESSAGE}"
 }
 
+add_tx_to_batch () {
+    TX=$1
+
+    if [ -z "$TXS_BATCH" ]
+    then
+        TXS_BATCH="$TX"
+    else
+        TXS_BATCH=${TXS_BATCH},${TX}
+    fi
+}
+
+generate_withdraw_commission_tx () {
+    local VALIDATOR_ADDRESS=$1
+
+    local WITHDRAW_COMMISSION_TX=$(cat ./templates/withdraw-commission-tx-json.tmpl | sed "s/<!#VALIDATOR_ADDRESS>/${VALIDATOR_ADDRESS}/g")
+
+    add_tx_to_batch "${WITHDRAW_COMMISSION_TX}"
+}
+
 generate_send_tx () {
     local ADDRESS=$1
     local CASHBACK=$2
@@ -269,7 +288,7 @@ generate_send_tx () {
     local SEND_TX=$(echo $SEND_TX | sed "s/<!#DENOM>/${DENOM}/g")
     local SEND_TX=$(echo $SEND_TX | sed "s/<!#AMOUNT>/${CASHBACK}/g")  
 
-    TXS_BATCH=${TXS_BATCH},${SEND_TX}
+    add_tx_to_batch "${SEND_TX}"
 }
 
 generate_delegate_tx () {
@@ -283,5 +302,24 @@ generate_delegate_tx () {
     local DELEGATE_TX=$(echo $DELEGATE_TX | sed "s/<!#DENOM>/${DENOM}/g")
     local DELEGATE_TX=$(echo $DELEGATE_TX | sed "s/<!#AMOUNT>/${AMOUNT}/g")  
 
-    TXS_BATCH=${TXS_BATCH},${DELEGATE_TX}
+    add_tx_to_batch "${DELEGATE_TX}"
+}
+
+get_validator_commission () {
+    local PATH_TO_SERVICE=$1
+    local USE_BALANCE=$2
+    local BALANCE_ADDRESS=$3
+    local VALIDATOR_ADDRESS=$4
+    local NODE=$5
+    local DENOM=$6
+
+    if [ "$USE_BALANCE" = "true" ]; then
+        VALIDATOR_COMMISSION=$(${PATH_TO_SERVICE} q bank balances $BALANCE_ADDRESS --node $NODE -o json | \
+            /usr/bin/jq ".balances[] | select(.denom | contains(\"$DENOM\")).amount | tonumber")
+    else
+        VALIDATOR_COMMISSION=$(${PATH_TO_SERVICE} q distribution commission $VALIDATOR_ADDRESS --node $NODE -o json | \
+            /usr/bin/jq ".commission[] | select(.denom | contains(\"$DENOM\")).amount | tonumber")
+        
+        generate_withdraw_commission_tx ${VALIDATOR_ADDRESS}
+    fi    
 }

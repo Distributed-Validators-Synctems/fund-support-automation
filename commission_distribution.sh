@@ -22,8 +22,7 @@ if [ -f "$LOCK_FILE" ]; then
     exit
 fi
 
-VALIDATOR_COMMISSION=$(${PATH_TO_SERVICE} q distribution commission $VALIDATOR_ADDRESS --node $NODE -o json | \
-    /usr/bin/jq ".commission[] | select(.denom | contains(\"$DENOM\")).amount | tonumber")
+get_validator_commission $PATH_TO_SERVICE "${USE_BALANCE}" "${OWNER_ADDRESS}" "${VALIDATOR_ADDRESS}" $NODE $DENOM
 
 if [ -z "$VALIDATOR_COMMISSION" ]
 then
@@ -40,7 +39,6 @@ if (( $(echo "$MIN_VALIDATOR_COMMISSION > $VALIDATOR_COMMISSION" | bc ) == 1 ));
 fi
 
 COMMISSION_WITHDRAW=0
-TXS_BATCH=""
 CSV_LINE="\""`date`"\";\"$MIN_COMMISSION_TO_WITHDRAW\";\"$VALIDATOR_COMMISSION\""
 
 WITHDRAW_ADRRESSES=$(cat $WITHDRAW_ADDRESSES_FILE)
@@ -130,7 +128,7 @@ fi
 
 echo $CSV_LINE >> ${CONFIG_DIR}/payments.csv
 
-if [ "$TOKENS_REDELEGATION" = "true" ]; then
+if [[ $USE_BALANCE != "true" && $TOKENS_REDELEGATION = "true" ]]; then
     OWNER_BALANCE=$(${PATH_TO_SERVICE} q bank balances $OWNER_ADDRESS --node $NODE -o json | \
         /usr/bin/jq ".balances[] | select(.denom | contains(\"$DENOM\")).amount | tonumber")
 
@@ -146,8 +144,7 @@ if [ "$TOKENS_REDELEGATION" = "true" ]; then
 fi
 
 echo "Broadcasting withdrawal transaction..."
-sed "s/<!#VALIDATOR_ADDRESS>/${VALIDATOR_ADDRESS}/g" ./templates/distribution-json.tmpl > ${TRANSACTION_OUTPUT_DIR}/distribution.json
-sed -i "s/<!#TXS_BATCH>/${TXS_BATCH}/g" ${TRANSACTION_OUTPUT_DIR}/distribution.json
+sed "s/<!#TXS_BATCH>/${TXS_BATCH}/g" ./templates/distribution-json.tmpl > ${TRANSACTION_OUTPUT_DIR}/distribution.json
 sed -i "s/<!#DENOM>/${DENOM}/g" ${TRANSACTION_OUTPUT_DIR}/distribution.json
 sed -i "s/<!#FEE>/${FEE}/g" ${TRANSACTION_OUTPUT_DIR}/distribution.json
 sed -i "s/<!#GAS_LIMIT>/${GAS_LIMIT}/g" ${TRANSACTION_OUTPUT_DIR}/distribution.json
