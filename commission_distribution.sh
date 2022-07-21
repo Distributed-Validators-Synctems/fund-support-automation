@@ -172,6 +172,8 @@ TX_RESULT=$($PATH_TO_SERVICE tx broadcast $TRANSACTION_OUTPUT_DIR/signed.json \
     --chain-id $CHAIN_ID \
     --node $NODE)
 
+echo $TX_RESULT
+
 if (( $? > 0 )); then
     notify_broadcast_failed $CHAIN_ID
     exit
