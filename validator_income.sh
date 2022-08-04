@@ -7,6 +7,8 @@ COIN=$4
 DENOM=$5
 NODE=${6:-"http://localhost:26657"}
 
+source $CONFIG_DIR/config.sh
+
 source ./utils.sh
 
 MAX_BLOCKS_TO_CHECK=90
