@@ -151,6 +151,10 @@ notify_chain_not_growing () {
     local BLOCK_TIME="${2}"
     local CONTROL_TIME="${3}"
 
+    if [ "$NOTIFY_NOT_GROWING_DISABLE" = "true" ]; then
+        return
+    fi
+
     local MESSAGE=$(cat <<-EOF
 <b>[Error] Chain height is not growing</b>
 Chain height is not growing, something wrong, please check. 
