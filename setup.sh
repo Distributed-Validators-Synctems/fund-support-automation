@@ -130,6 +130,13 @@ dvs_supported_chains () {
             CHAIN_DENOM="uxki"
             return
             ;;
+        desmos)
+            DVS_FOUNDATION_ADDRESS="desmos13vvzuvggw6ufvx24p5y0xqhsa35cjmy3wlxtrl"
+            RECOMMENDED_FEE="2000"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="10000000"
+            CHAIN_DENOM="udsm"
+            return
+            ;;
     esac
 
     echo -e "${RED}ERROR!${NC} This chain is not supported ($NODE_SERVICE)."
