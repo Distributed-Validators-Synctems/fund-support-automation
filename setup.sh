@@ -123,6 +123,13 @@ dvs_supported_chains () {
             CHAIN_DENOM="ubcna"
             return
             ;;
+        kid)
+            DVS_FOUNDATION_ADDRESS="ki1amhz4ex7a257ykrcqhtmj8nh6zh65cussh7l6f"
+            RECOMMENDED_FEE="5000"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="10000000"
+            CHAIN_DENOM="uxki"
+            return
+            ;;
     esac
 
     echo -e "${RED}ERROR!${NC} This chain is not supported ($NODE_SERVICE)."
