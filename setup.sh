@@ -116,6 +116,13 @@ dvs_supported_chains () {
             CHAIN_DENOM="ufct"
             return
             ;;
+        bcnad)
+            DVS_FOUNDATION_ADDRESS="bcna1duqf72hheww8q8zt42e2cmdy5gktc5eleq0vtr"
+            RECOMMENDED_FEE="200"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="5000000"
+            CHAIN_DENOM="ubcna"
+            return
+            ;;
     esac
 
     echo -e "${RED}ERROR!${NC} This chain is not supported ($NODE_SERVICE)."
