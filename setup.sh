@@ -109,6 +109,13 @@ dvs_supported_chains () {
             CHAIN_DENOM="umntl"
             return
             ;;
+        firmachaind)
+            DVS_FOUNDATION_ADDRESS="firma1ste35jqfu9x4ct6vj86lf7fc8zlc4azckkdr77"
+            RECOMMENDED_FEE="20000"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="10000000"
+            CHAIN_DENOM="ufct"
+            return
+            ;;
     esac
 
     echo -e "${RED}ERROR!${NC} This chain is not supported ($NODE_SERVICE)."
