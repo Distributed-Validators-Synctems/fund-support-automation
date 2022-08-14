@@ -131,7 +131,7 @@ dvs_supported_chains () {
             return
             ;;
         desmos)
-            DVS_FOUNDATION_ADDRESS="desmos13vvzuvggw6ufvx24p5y0xqhsa35cjmy3wlxtrl"
+            DVS_FOUNDATION_ADDRESS="desmos18vh4kaj8fkvas0atyh6gkrtrznwpute6v6jfaa"
             RECOMMENDED_FEE="2000"
             RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="10000000"
             CHAIN_DENOM="udsm"
