@@ -109,6 +109,34 @@ dvs_supported_chains () {
             CHAIN_DENOM="umntl"
             return
             ;;
+        firmachaind)
+            DVS_FOUNDATION_ADDRESS="firma1ste35jqfu9x4ct6vj86lf7fc8zlc4azckkdr77"
+            RECOMMENDED_FEE="20000"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="10000000"
+            CHAIN_DENOM="ufct"
+            return
+            ;;
+        bcnad)
+            DVS_FOUNDATION_ADDRESS="bcna1duqf72hheww8q8zt42e2cmdy5gktc5eleq0vtr"
+            RECOMMENDED_FEE="200"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="5000000"
+            CHAIN_DENOM="ubcna"
+            return
+            ;;
+        kid)
+            DVS_FOUNDATION_ADDRESS="ki1amhz4ex7a257ykrcqhtmj8nh6zh65cussh7l6f"
+            RECOMMENDED_FEE="5000"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="10000000"
+            CHAIN_DENOM="uxki"
+            return
+            ;;
+        desmos)
+            DVS_FOUNDATION_ADDRESS="desmos18vh4kaj8fkvas0atyh6gkrtrznwpute6v6jfaa"
+            RECOMMENDED_FEE="2000"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="10000000"
+            CHAIN_DENOM="udsm"
+            return
+            ;;
     esac
 
     echo -e "${RED}ERROR!${NC} This chain is not supported ($NODE_SERVICE)."

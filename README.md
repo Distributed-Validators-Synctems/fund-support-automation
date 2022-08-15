@@ -27,6 +27,10 @@ This tools is intendent to be used to automate support of the DVS Foundation fro
 * Stargaze
 * Starname
 * Rizon
+* Firmachain
+* BitCanna
+* KiChain
+* Desmos
 
 If you cannot find your chain in the list simply create a PR with it, or ask me directly (Telegram: https://t.me/Albert_OpenTech).
 
