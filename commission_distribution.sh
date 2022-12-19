@@ -43,7 +43,7 @@ CSV_LINE="\""`date`"\";\"$MIN_COMMISSION_TO_WITHDRAW\";\"$VALIDATOR_COMMISSION\"
 
 WITHDRAW_ADRRESSES=$(cat $WITHDRAW_ADDRESSES_FILE)
 
-PRIMARY_ADDRESSES=$(echo "${WITHDRAW_ADRRESSES}" | jq -r '.[] | select(.primary)' | jq -s)
+PRIMARY_ADDRESSES=$(echo "${WITHDRAW_ADRRESSES}" | jq -r '.[] | select(.primary)' | jq -s '.')
 WITHDRAW_ADDRESSES_AMOUNT=$(echo "${PRIMARY_ADDRESSES}" | jq 'length - 1')
 if [ "$WITHDRAW_ADDRESSES_AMOUNT" -ge "0" ]; then
     for ADDRESS_IDX in $( eval echo {0..$WITHDRAW_ADDRESSES_AMOUNT} )
@@ -99,7 +99,7 @@ echo "COMMISSION_WITHDRAW: $COMMISSION_WITHDRAW"
 echo "COMMISSION_REMAINDER: $COMMISSION_REMAINDER"
 
 
-SECONDARY_ADDRESSES=$(echo "${WITHDRAW_ADRRESSES}" | jq -r '.[] | select((.primary // false) == false)' | jq -s)
+SECONDARY_ADDRESSES=$(echo "${WITHDRAW_ADRRESSES}" | jq -r '.[] | select((.primary // false) == false)' | jq -s '.')
 WITHDRAW_ADDRESSES_AMOUNT=$(echo "${SECONDARY_ADDRESSES}" | jq 'length - 1')
 COMMISSION_LEFT=$COMMISSION_REMAINDER
 
