@@ -138,10 +138,17 @@ dvs_supported_chains () {
             return
             ;;
         kyved)
-            DVS_FOUNDATION_ADDRESS="kyve1qhacl58wweuspqectw6tmj27vgrepzpa0pwg7s"
+            DVS_FOUNDATION_ADDRESS="kyve1c03jkal0xplar2p7ndshxeqrh9kw4m6ultz6e2"
             RECOMMENDED_FEE="2000"
             RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="100000"
             CHAIN_DENOM="ukyve"
+            return
+            ;;
+        quicksilverd)
+            DVS_FOUNDATION_ADDRESS="quick1c03jkal0xplar2p7ndshxeqrh9kw4m6urpl7tu"
+            RECOMMENDED_FEE="2000"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="100000"
+            CHAIN_DENOM="uqck"
             return
             ;;
     esac
