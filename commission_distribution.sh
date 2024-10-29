@@ -130,10 +130,10 @@ echo $CSV_LINE >> ${CONFIG_DIR}/payments.csv
 
 if [[ $USE_BALANCE != "true" && $TOKENS_REDELEGATION = "true" ]]; then
     OWNER_BALANCE=$(${PATH_TO_SERVICE} q bank balances $OWNER_ADDRESS --node $NODE -o json | \
-        /usr/bin/jq ".balances[] | select(.denom | contains(\"$DENOM\")).amount | tonumber")
+        /usr/bin/jq ".balances[] | select(.denom == \"$DENOM\").amount | tonumber")
 
     OWNER_REWARD=$(${PATH_TO_SERVICE} q distribution rewards $OWNER_ADDRESS $VALIDATOR_ADDRESS --node $NODE -o json | \
-        /usr/bin/jq ".rewards[] | select(.denom | contains(\"$DENOM\")).amount | tonumber")
+        /usr/bin/jq ".rewards[] | select(.denom == \"$DENOM\").amount | tonumber")
 
     AMOUNT_TO_DELEGATE=$(echo $OWNER_BALANCE+$OWNER_REWARD+$COMMISSION_LEFT-$TOKENS_REMAINDER-$FEE | bc | cut -f1 -d".")
 
