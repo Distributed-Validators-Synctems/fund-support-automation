@@ -151,7 +151,7 @@ dvs_supported_chains () {
             CHAIN_DENOM="uqck"
             return
             ;;
-         atomoned)
+        atomoned)
             DVS_FOUNDATION_ADDRESS="atone1c03jkal0xplar2p7ndshxeqrh9kw4m6ux9ntyk"
             RECOMMENDED_FEE="5000"
             RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="10000000"
