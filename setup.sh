@@ -158,6 +158,13 @@ dvs_supported_chains () {
             CHAIN_DENOM="uatone"
             return
             ;;
+         dungeond)
+            DVS_FOUNDATION_ADDRESS="dungeon1c03jkal0xplar2p7ndshxeqrh9kw4m6uxks2c4"
+            RECOMMENDED_FEE="5000"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="10000000"
+            CHAIN_DENOM="udgn"
+            return
+            ;;
     esac
 
     echo -e "${RED}ERROR!${NC} This chain is not supported ($NODE_SERVICE)."
