@@ -157,6 +157,12 @@ dvs_supported_chains () {
             RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="10000000"
             CHAIN_DENOM="uatone"
             return
+        omniflixhubd)
+            DVS_FOUNDATION_ADDRESS="omniflix1ml4f650m35lsczzpjds54d56xnptfx4wvlap56"
+            RECOMMENDED_FEE="5000"
+            RECOMMENDED_MIN_COMMISSION_TO_WITHDRAW="10000000"
+            CHAIN_DENOM="uflix"
+            return
             ;;
     esac
 
